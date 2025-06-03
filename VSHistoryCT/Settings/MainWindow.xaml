@@ -1,0 +1,184 @@
+﻿<Window x:Class="VSHistory.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSHistory"
+        mc:Ignorable="d"
+        x:Name="winMainWindow"
+        WindowStartupLocation="CenterScreen"
+        Title="VSHistory Settings"
+        Height="520" Width="600"
+        ResizeMode="CanResize"
+        FontSize="{Binding NormalFontSize}"
+        Loaded="winMainWindow_Loaded"
+        Topmost="True"
+        WindowStyle="ToolWindow">
+    <!--Topmost="True"-->
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical" Grid.Row="0">
+
+            <TextBlock
+                Text="Visual Studio History Settings"
+                Margin="10"
+                VerticalAlignment="Center"
+                FontSize="{Binding TitleFontSize}"
+                FontWeight="Bold" />
+
+            <StackPanel Orientation="Horizontal" Margin="10,0">
+
+                <RadioButton
+                    x:Name="radAllSolutions"
+                    Content="Default settings for all solutions"
+                    Checked="radAllSolutions_Checked"
+                    IsChecked="True" />
+
+                <RadioButton
+                    x:Name="radThisSolution"
+                    Content="Settings for _this solution"
+                    Checked="radAllSolutions_Checked"
+                    Margin="10,0" />
+            </StackPanel>
+
+            <Separator Margin="0,5" />
+
+            <StackPanel Orientation="Horizontal" Margin="10,0">
+
+                <StackPanel.Resources>
+
+                    <Style TargetType="RadioButton">
+                        <EventSetter Event="Checked" Handler="RadioButton_Checked" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="{Binding SmallerFontSize}" />
+                        <Setter Property="Height" Value="12" />
+                        <Setter Property="Margin" Value="10,0,0,0" />
+                    </Style>
+
+                    <Style TargetType="Button">
+                        <EventSetter Event="Click" Handler="btnFontUpDown" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="{Binding SmallerFontSize}" />
+                        <Setter Property="Margin" Value="10,0,0,0" />
+                    </Style>
+                </StackPanel.Resources>
+
+                <TextBlock
+                    FontSize="{Binding SmallerFontSize}"
+                    VerticalAlignment="Center"
+                    Text="Tab Location" />
+
+                <RadioButton
+                    x:Name="radTabsLeft"
+                    Content="Left"
+                    IsChecked="{Binding radTabsLeft}" />
+
+                <RadioButton
+                    x:Name="radTabsTop"
+                    Content="Top"
+                    IsChecked="{Binding radTabsTop}" />
+
+                <RadioButton
+                    x:Name="radTabsRight"
+                    Content="Right"
+                    IsChecked="{Binding radTabsRight}" />
+
+                <Button
+                    x:Name="btnFontUp"
+                    Content="Font+"
+                    ToolTip="{Binding ElementName=winMainWindow, Path=FontSize}"
+                    Margin="25,0,0,0" />
+
+                <Button
+                    x:Name="btnFontDown"
+                    ToolTip="{Binding ElementName=winMainWindow, Path=FontSize}"
+                    Content="Font-" />
+            </StackPanel>
+        </StackPanel>
+
+        <Separator Grid.Row="1" />
+
+        <TabControl
+            Grid.Row="2"
+            x:Name="tabControl"
+            x:FieldModifier="public"
+            TabStripPlacement="Left"
+            SelectedIndex="0">
+
+            <TabItem Header="_General" x:Name="tabGeneral" x:FieldModifier="public">
+                <local:TabGeneral />
+            </TabItem>
+
+            <TabItem Header="Date F_ormats" Name="tabDateFormat" x:FieldModifier="public">
+                <local:TabDateFormat />
+            </TabItem>
+
+            <TabItem Header="_All Files" Name="tabAllFiles" x:FieldModifier="public">
+                <local:TabAllFiles />
+            </TabItem>
+
+            <TabItem Header="Location of _Files" Name="tabFileLocation" x:FieldModifier="public">
+                <local:TabLocation />
+            </TabItem>
+
+            <TabItem Header="File E_xclusions" Name="tabFileExclusions" x:FieldModifier="public">
+                <local:TabFileExclusions />
+            </TabItem>
+
+            <TabItem Header="_Directory Exclusions" Name="tabDirectoryExclusions" x:FieldModifier="public">
+                <local:TabDirectoryExclusions />
+            </TabItem>
+
+            <TabItem Header="_Logging" Name="tabLogging" x:FieldModifier="public">
+                <local:TabLogging />
+            </TabItem>
+        </TabControl>
+
+        <Separator Grid.Row="3" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right">
+
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="8,4" />
+                    <Setter Property="Padding" Value="5,3" />
+                    <!--<Setter Property="FontSize" Value="14" />-->
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </StackPanel.Resources>
+
+            <Button
+                Content="_OK"
+                Name="btnOK"
+                IsDefault="True"
+                Click="btnOK_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5" />
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button
+                Content="_Cancel"
+                Name="btnCloseMain"
+                IsCancel="True"
+                Click="btnCloseMain_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5" />
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

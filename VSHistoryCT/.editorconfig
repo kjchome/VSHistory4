@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = none
+
+# VSSpell001: Spell Check
+dotnet_diagnostic.VSSpell001.severity = none

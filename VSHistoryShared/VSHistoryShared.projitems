@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c57106cc-6a6e-42ac-a324-c4fb9e69e33f</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>VSHistoryShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BuildTimestamp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SolutionInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VSHistoryFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VSHistoryUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VSLog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VS_Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Win32Imports.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Win32Utilities.cs" />
+  </ItemGroup>
+</Project>

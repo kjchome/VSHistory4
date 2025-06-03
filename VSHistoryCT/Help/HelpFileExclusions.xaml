@@ -1,0 +1,139 @@
+﻿<Window x:Class="VSHistory.Help.HelpFileExclusions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSHistory.Help"
+        mc:Ignorable="d"
+        FontSize="13"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        Title="File Exclusions Help"
+        Topmost="True"
+        Height="600"
+        Width="500">
+
+    <ScrollViewer Margin="10">
+
+        <Grid>
+
+            <Grid.Resources>
+
+                <Style x:Key="LongText" TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+
+                <Style x:Key="Title" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Margin" Value="10,5" />
+                </Style>
+
+            </Grid.Resources>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+
+                <TextBlock Style="{StaticResource Title}" Text="File Exclusions" />
+
+                <Button
+                    Content="Close"
+                    IsCancel="True"
+                    Padding="5,2"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="1">
+                The file exclusions feature lets you specify certain file types
+                or patterns that should be ignored by the VS History tracking system. 
+                This is useful for excluding temporary files, build artifacts,
+                or any other files that you do not want to include in your history.
+                <LineBreak/>
+                <LineBreak/>
+                Each entry contains the filename to be excluded.
+                Do not include the path to the file, just the filename or pattern.
+                Wildcards are permitted.  The names are case-insensitive.
+                <LineBreak/>
+                <LineBreak/>
+                To add a file exclusion, enter the file type or pattern
+                in an empty text box.
+                To remove an existing exclusion, select the exclusion and press
+                the Delete key on the keyboard.
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="2"
+                Style="{StaticResource Title}"
+                Text="Default and Solution-specific Exclusions" />
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="3">
+                If you have selected "Default settings for all solutions", the file exclusions
+                apply to all solutions.
+                <LineBreak/>
+                <LineBreak/>
+                If you have selected "Settings for this solution",
+                any file exclusions you add apply only to the current solution.
+                The default setting file exclusions also
+                apply and are shown in red and cannot be changed.
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="4"
+                Style="{StaticResource Title}"
+                Text="Examples" />
+
+            <Grid Grid.Row="5" >
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="*.tmp" Grid.Column="0" Grid.Row="0" Margin="20,0,10,0" />
+                <TextBlock Grid.Column="1" Grid.Row="0"
+                           Text="Exclude all files with a .tmp extension." />
+
+                <TextBlock Text="*tmp*" Grid.Column="0" Grid.Row="1" Margin="20,0,10,0" />
+                <TextBlock Grid.Column="1" Grid.Row="1" 
+                           Text="Exclude all files with tmp (or Tmp or TMP) in the name." />
+
+                <TextBlock Text="Ignore.txt" Grid.Column="0" Grid.Row="2" Margin="20,0,10,0" />
+                <TextBlock Grid.Column="1" Grid.Row="2"
+                           Text="Exclude any files named Ignore.txt."/>
+
+                <TextBlock Text="Skip??.log" Grid.Column="0" Grid.Row="3" Margin="20,0,10,0" />
+                <TextBlock Grid.Column="1" Grid.Row="3"
+                           Text="Exclude files named Skip00.log, Skip99.log, etc."/>
+
+            </Grid>
+
+            <TextBlock
+                Text="Keep in mind that you must click the OK button to save your changes."
+                Grid.Row="6"
+                Margin="10" />
+
+        </Grid>
+        
+    </ScrollViewer>
+
+</Window>

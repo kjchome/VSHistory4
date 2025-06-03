@@ -1,0 +1,139 @@
+﻿<UserControl
+    x:Class="VSHistory.TabLocation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+    xmlns:theming="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
+    xmlns:util="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
+    xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+    xmlns:local="clr-namespace:VSHistory"
+    mc:Ignorable="d" 
+    d:DesignHeight="350"
+    d:DesignWidth="600"
+    >
+
+    <UserControl.Resources>
+
+        <Style TargetType="RadioButton">
+            <!--<EventSetter Event="Checked" Handler="RadioButton_Checked"/>-->
+            <Setter Property="Margin" Value="20,5"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+
+        <StackPanel Orientation="Vertical" Margin="5,5,0,0">
+
+            <Grid Grid.Row="0" Margin="10,5">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Text="Location of VSHistory Files"
+                    FontSize="{Binding TitleFontSize}"
+                    FontWeight="Bold"
+                    Margin="0,3"
+                    Grid.Column="0"
+                    />
+
+                <TextBlock
+                    Text="Click for detailed help. "
+                    FontSize="{Binding SmallFontSize}"
+                    VerticalAlignment="Center"
+                    Margin="0,3"
+                    Grid.Column="1"
+                    />
+
+                <imaging:CrispImage
+                    x:Name="imgHelp"
+                    Height="24" Width="24"
+                    Grid.Column="2"
+                    PreviewMouseLeftButtonDown="CrispImage_PreviewMouseLeftButtonDown"
+                    Moniker="{x:Static catalog:KnownMonikers.StatusHelp}" 
+                    Margin="0,0,10,0"
+                    />
+
+                <!--
+                    This is for testing since I can't get the CrispImage to show up.
+                    It will be invisible when running in Visual Studio.
+                -->
+                <Button
+                    x:Name="btnHelp"
+                    Content="?"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    PreviewMouseLeftButtonDown="CrispImage_PreviewMouseLeftButtonDown"
+                    Padding="4,0"
+                    Margin="3"
+                    />
+
+            </Grid>
+
+            <Separator Margin="-5,5,0,5"/>
+
+            <RadioButton
+                x:Name="FileLocation_WithSolution"
+                IsChecked="{Binding FileLocation_WithSolution, UpdateSourceTrigger=PropertyChanged}"
+                Content="Store VS History Files with the Solution"
+                />
+
+            <RadioButton
+                x:Name="FileLocation_AppData"
+                IsChecked="{Binding FileLocation_AppData, UpdateSourceTrigger=PropertyChanged}"
+                Content="Store VS History Files in Application Data"
+                />
+
+            <TextBox
+                x:Name="txtAppDataPath"
+                BorderThickness="0"
+                IsEnabled="False"
+                Margin="40,3,5,5"
+                />
+
+            <RadioButton
+                x:Name="FileLocation_Custom"
+                IsChecked="{Binding FileLocation_Custom, UpdateSourceTrigger=PropertyChanged}"
+                Content="Store VS History Files here.&#10;Click the Browse button to select the solution directory."                
+                />
+
+            <Grid Margin="40,0,0,5">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox
+                    x:Name="txtCustomPath"
+                    x:FieldModifier="public"
+                    Grid.Column="0"
+                    IsReadOnly="True"
+                    ToolTip="Click the Browse button to select a directory."
+                    Text="{Binding FileLocation, UpdateSourceTrigger=PropertyChanged}"
+                    IsEnabled="{Binding ElementName=FileLocation_Custom, Path=IsChecked}"
+                    />
+
+                <Button
+                    Content="Browse..."
+                    Margin="5,0,5,0"
+                    Padding="5,0"
+                    x:Name="btnBrowse"
+                    Grid.Column="1"
+                    Click="btnBrowse_Click"
+                    IsEnabled="{Binding ElementName=FileLocation_Custom, Path=IsChecked}"
+                    />
+
+            </Grid>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

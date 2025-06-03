@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="VSHistory.TabAllFiles"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VSHistory"
+             mc:Ignorable="d" 
+             d:DesignHeight="350"
+             d:DesignWidth="600"
+             Loaded="UserControl_Loaded"             
+             >
+
+    <UserControl.Resources>
+
+        <Style TargetType="RadioButton">
+            <EventSetter Event="Checked" Handler="RadioButton_Checked"/>
+        </Style>
+    
+    </UserControl.Resources>
+    
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label
+            Content="VS History Files in this Solution"
+            Grid.Row="0"
+            Margin="6,0"
+            FontSize="{Binding TitleFontSize}"
+            FontWeight="Bold"
+            />
+
+        <Label
+            x:Name="labInfo"
+            Content="Double-click a history file showing a date for a Diff with the current file."
+            Grid.Row="1"
+            Margin="6,0"
+            />
+
+        <StackPanel
+            Grid.Row="2"
+            Orientation="Horizontal"
+            >
+
+            <RadioButton
+                x:Name="radOrderByFile"
+                Content="Order by file_name"
+                Margin="6"
+                IsChecked="{Binding radOrderByFile}"/>
+
+            <RadioButton
+                x:Name="radOrderByDate"
+                Content="Order by date/_time"
+                Margin="6"
+                IsChecked="{Binding radOrderByDate}"/>
+
+        </StackPanel>
+
+        <TreeView
+            x:Name="treeViewFiles"
+            Grid.Row="3"
+            Margin="6,0"
+            >
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            
+            <!--<TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding VSHistoryFile}">
+                    <TextBlock Text="{Binding Name}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>-->
+        </TreeView>
+        
+    </Grid>
+    
+</UserControl>

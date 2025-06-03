@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <Extern href="stdidcmd.h" />
+    <Extern href="vsshlids.h" />
+    <Include href="KnownImageIds.vsct" />
+    <Include href="VSGlobals.vsct" />
+
+    <Commands package="VSHistory">
+
+        <!--This section defines the elements the user can interact with,
+            like a menu command or a button or combo box in a toolbar. -->
+
+        <Buttons>
+
+            <!-- The following items will be displayed in the ToolBar of the Tool Window. -->
+            <Button guid="VSHistory" id="VSHistoryAllFiles" priority="0x0001">
+                <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
+                <Icon guid="ImageCatalogGuid" id="ShowAllFiles" />
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>All Files</ButtonText>
+                    <ToolTipText>View all available VSHistory files</ToolTipText>
+                </Strings>
+            </Button>
+
+            <Button guid="VSHistory" id="VSHistory" priority="0x0003">
+                <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
+                <Icon guid="ImageCatalogGuid" id="Settings" />
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>Settings</ButtonText>
+                    <ToolTipText>View or change VSHistory Settings</ToolTipText>
+                </Strings>
+            </Button>
+
+            <Button guid="VSHistory" id="VSHistoryOpen" priority="0x0004">
+                <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
+                <Icon guid="ImageCatalogGuid" id="OpenFolder" />
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>Open</ButtonText>
+                    <ToolTipText>Open the folder containing these VSHistory files</ToolTipText>
+                </Strings>
+            </Button>
+
+            <!-- The following items will be displayed in the Extensions sub-menu. -->
+
+            <Button guid="VSHistoryExtensions" id="VSHistoryExtensionsSettingsID" priority="0x0101" type="Button">
+                <Parent guid="VSHistoryExtensions" id="ButtonsGroup" />
+                <Icon guid="ImageCatalogGuid" id="Settings" />
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>VSHistory &amp;Settings</ButtonText>
+                    <ToolTipText>View or change VSHistory settings</ToolTipText>
+                </Strings>
+            </Button>
+
+            <Button guid="VSHistoryExtensions" id="VSHistoryExtensionsToolWindowID" priority="0x0102" type="Button">
+                <Parent guid="VSHistoryExtensions" id="ButtonsGroup" />
+                <Icon guid="ImageCatalogGuid" id="ShowFullHistory" />
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>VSHistory &amp;Tool Window</ButtonText>
+                    <ToolTipText>View the VSHistory Files</ToolTipText>
+                </Strings>
+            </Button>
+
+        </Buttons>
+
+        <Menus>
+
+            <Menu guid="VSHistory" id="VSHistoryToolbar" type="ToolWindowToolbar">
+                <CommandFlag>DefaultDocked</CommandFlag>
+                <Strings>
+                    <ButtonText>VSHistory Window Toolbar</ButtonText>
+                </Strings>
+            </Menu>
+
+            <!-- The top-level Extensions menu. -->
+            <Menu guid="VSHistoryExtensions" id="SubMenuID" priority="0x100" type="Menu">
+                <Parent guid="VSHistoryExtensions" id="SubMenuGroupID" />
+                <Strings>
+                    <ButtonText>VSHistory</ButtonText>
+                    <CommandName>&amp;VSHistory</CommandName>
+                    <ToolTipText>Manage VSHistory settings and tool window.</ToolTipText>
+                </Strings>
+            </Menu>
+
+        </Menus>
+
+        <Groups>
+
+            <Group guid="VSHistory" id="VSHistoryToolbarGroup" priority="0x0000">
+                <Parent guid="VSHistory" id="VSHistoryToolbar" />
+            </Group>
+
+            <Group guid="VSHistoryExtensions" id="ButtonsGroup" priority="0x0100">
+                <Parent guid="VSHistoryExtensions" id="SubMenuID" />
+            </Group>
+
+            <Group guid="VSHistoryExtensions" id="SubMenuGroupID" priority="0x0100">
+                <Parent guid="VSMainMenu" id="Extensions" />
+            </Group>
+
+        </Groups>
+
+    </Commands>
+
+    <Symbols>
+
+        <!-- The main VSHistory Tool Window. -->
+        <GuidSymbol name="VSHistoryWindowPane" value="{902bcf59-0f85-4b8b-9ebd-3ec897906bd2}" />
+        <GuidSymbol name="VSHistory" value="{02d1238c-021c-479c-938e-ae4d1f89c464}">
+
+            <IDSymbol name="VSHistoryCommand" value="0x0100" />
+            <IDSymbol name="VSHistoryAllFiles" value="0x0201" />
+            <IDSymbol name="VSHistory" value="0x0203" />
+            <IDSymbol name="VSHistoryOpen" value="0x0204" />
+
+            <IDSymbol name="VSHistoryToolbarGroup" value="0x1101" />
+
+            <IDSymbol name="VSHistoryToolbar" value="0x3000" />
+
+        </GuidSymbol>
+
+        <!-- The Extensions Menu. -->
+        <GuidSymbol name="VSHistoryExtensions" value="{915945ae-3c8a-48d7-a9c3-258ad6bdb845}">
+
+            <IDSymbol name="VSHistoryExtensionsSettingsID" value="0x5102" />
+            <IDSymbol name="VSHistoryExtensionsToolWindowID" value="0x5103" />
+            <IDSymbol name="ButtonsGroup" value="0x5120" />
+            <IDSymbol name="SubMenuID" value="0x5200"/>
+            <IDSymbol name="SubMenuGroupID" value="0x5250"/>
+
+        </GuidSymbol>
+
+        <!-- The Options windows. -->
+        <GuidSymbol name="AllFiles" value="{1fddebc3-5ae1-4611-9cd0-f12877d82ac1}" />
+        <GuidSymbol name="Exclusions" value="{af70533b-e1fa-452f-a906-de9f1ea32506}" />
+        <GuidSymbol name="FileLocation" value="{3aab6f78-019a-4e16-bbdf-fdc36d1f2d1f}" />
+
+    </Symbols>
+
+</CommandTable>

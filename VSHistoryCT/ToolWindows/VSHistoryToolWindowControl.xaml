@@ -1,0 +1,172 @@
+﻿<UserControl x:Class="VSHistory.VSHistoryToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             xmlns:local="clr-namespace:VSHistory"
+             toolkit:Themes.UseVsTheme="True"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             Name="VSHistoryToolWindow">
+
+    <UserControl.Resources>
+
+        <local:VSHistoryRows x:Key="vshistoryRows"/>
+
+        <SolidColorBrush Color="Black" x:Key="cellForeground"/>
+        <SolidColorBrush Color="White" x:Key="cellBackground"/>
+
+        <SolidColorBrush Color="Blue" x:Key="buttonForeground"/>
+        <SolidColorBrush Color="White" x:Key="buttonBackground"/>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0" />
+
+            <!-- This causes ugly white spaces when the Dark theme is used.
+            <Setter Property="Padding" Value="3,0"/>
+            -->
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <!--<Setter Property="FontSize" Value="{Binding SmallFontSize}"/>-->
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="Height" Value="18"/>
+            <Setter Property="Foreground" Value="{DynamicResource buttonForeground}"/>
+            <Setter Property="Background" Value="{DynamicResource buttonBackground}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+
+        <DataGrid
+            x:Name="gridFiles"
+            SelectionMode="Single"
+            SelectionUnit="Cell"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            HeadersVisibility="Column"
+            RowHeaderWidth="0"
+            HorizontalGridLinesBrush="{DynamicResource cellBackground}"
+            VerticalGridLinesBrush="{DynamicResource cellBackground}"
+            >
+
+            <DataGrid.Columns>
+
+                <DataGridTemplateColumn
+                    x:Name="colOpen"
+                    Header="Open (localized)"
+                    IsReadOnly="True">
+                    
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Content="{Binding ElementName=colOpen, Path=Header}"
+                                Click="Open_Click"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+
+                </DataGridTemplateColumn>
+
+                <DataGridCheckBoxColumn
+                    Binding="{Binding Checked, Mode=TwoWay,
+                              UpdateSourceTrigger=PropertyChanged}">
+
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip"
+                                Value="Select 2 VS History versions to display their differences."/>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+
+                    <DataGridCheckBoxColumn.ElementStyle>
+                        <Style TargetType="CheckBox">
+                            <EventSetter Event="Checked"  Handler="CheckBox_Checked"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.ElementStyle>
+
+                </DataGridCheckBoxColumn>
+
+                <DataGridTemplateColumn
+                    x:Name="colDiff"
+                    Header="Diff (localized)"
+                    IsReadOnly="True">
+                    
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Content="{Binding ElementName=colDiff, Path=Header}"
+                                Click="Diff_Click"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn
+                    x:Name="colSize"
+                    Header="Size (localized)"
+                    IsReadOnly="True"
+                    Binding="{Binding FileSize, StringFormat='{}{0:N0}'}"
+                    >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
+                            <Setter Property="ToolTip" Value="{Binding SizeOnDisk}"/>
+                            <!-- This causes ugly white spaces when the Dark theme is used.
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                            -->
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn
+                    x:Name="colDate"
+                    Header="Date (localized)"
+                    IsReadOnly="True"
+                    Width="*"
+                    SortMemberPath="{Binding WhenSaved}"
+                    Binding="{Binding PrettyWhenSaved}"
+                    >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</UserControl>

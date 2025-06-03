@@ -1,0 +1,242 @@
+﻿<UserControl x:Class="VSHistory.TabGeneral"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VSHistory"
+             mc:Ignorable="d" 
+             d:DesignHeight="350"
+             d:DesignWidth="600"
+             Loaded="UserControl_Loaded"
+             >
+    
+    <Grid>
+
+        <Grid.Resources>
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="10,5"/>
+            </Style>
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBox
+            Text="VSHistory can maintain the history of Visual Studio project files. 
+Whenever a file is changed and saved, it will be saved in a special folder for that file."
+            Margin="10,0,10,5"
+            BorderThickness="0"
+            IsReadOnly="True"
+            Grid.Row="0"
+            TextWrapping="WrapWithOverflow"/>
+
+        <Separator Grid.Row="1"/>
+
+        <StackPanel
+            Orientation="Horizontal"
+            Margin="10,0,0,0"
+            Grid.Row="2">
+
+            <Button
+                x:Name="btnReset"
+                Content="Copy defaults to all solutions"
+                Margin="0,5,5,5"
+                Padding="5,0"
+                VerticalAlignment="Center"
+                Click="btnReset_Click"
+                ToolTip="This will set all settings to the default values&#10;and will remove any solution-specific settings."
+                />
+
+            <Button
+                x:Name="btnResetThis"
+                Content="Copy default settings to this solution"
+                Margin="0,5,5,5"
+                Padding="5,0"
+                VerticalAlignment="Center"
+                Click="btnResetThis_Click"
+                ToolTip="This will set the settings for this solution to&#10;the default settings for all solutions."
+                />
+
+        </StackPanel>
+        
+        <Separator Grid.Row="3"/>
+
+        <CheckBox
+            x:Name="chkEnabled"
+            Content="Enable Visual Studio History"
+            FontWeight="Bold"
+            IsChecked="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}"
+            Grid.Row="4"/>
+
+        <!-- This grid is disabled if the Enabled checkbox is not checked -->
+        <Grid
+            Grid.Row="5"
+            Margin="36,5,0,5"
+            IsEnabled="{Binding ElementName=chkEnabled, Path=IsChecked}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <CheckBox
+                x:Name="chkKeepLatest"
+                IsChecked="{Binding KeepLatest, UpdateSourceTrigger=PropertyChanged}"
+                Content="Keep up to this many VSHistory files:"
+                Grid.Row="0"
+                Grid.Column="0"/>
+
+            <ComboBox
+                Name="comboKeepLatest"
+                Grid.Row="0"
+                Grid.Column="1"
+                Width="Auto"
+                SelectedIndex="{Binding KeepLatestIndex, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center"
+                >
+
+                <!-- Tag is the number of files -->
+                <!--<ComboBoxItem Content="10"/>
+                <ComboBoxItem Content="25"/>
+                <ComboBoxItem Content="50"/>
+                <ComboBoxItem Content="100"/>
+                <ComboBoxItem Content="500"/>
+                <ComboBoxItem Content="1000"/>-->
+                
+            </ComboBox>
+
+            <CheckBox
+                x:Name="chkKeepForTime"
+                Content="Keep VSHistory files for:"
+                IsChecked="{Binding KeepForTime, UpdateSourceTrigger=PropertyChanged}"
+                Grid.Row="1"
+                Grid.Column="0"/>
+
+            <ComboBox
+                Name="comboKeepForTime"
+                Grid.Row="1"
+                Grid.Column="1"
+                Width="Auto"
+                SelectedIndex="{Binding KeepForTimeIndex, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center"
+                >
+
+                <!-- Tag is the number of days -->
+                <!--<ComboBoxItem Content="10 days" Tag="10"/>
+                <ComboBoxItem Content="30 days" Tag="30"/>
+                <ComboBoxItem Content="90 days" Tag="90"/>
+                <ComboBoxItem Content="180 days" Tag="180"/>
+                <ComboBoxItem Content="360 days" Tag="360"/>-->
+
+            </ComboBox>
+
+            <CheckBox
+                x:Name="chkFrequency"
+                Content="Don't save more often than:"
+                IsChecked="{Binding Frequency, UpdateSourceTrigger=PropertyChanged}"
+                Grid.Row="2"
+                Grid.Column="0"/>
+
+            <ComboBox
+                Name="comboFrequency"
+                Grid.Row="2"
+                Grid.Column="1"
+                Width="Auto"
+                SelectedIndex="{Binding FrequencyIndex, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center"
+                >
+
+                <!-- Tag is the number of seconds -->
+                <!--<ComboBoxItem Content="30 seconds" Tag="30"/>
+                <ComboBoxItem Content="1 minute" Tag="60"/>
+                <ComboBoxItem Content="5 minutes" Tag="300"/>
+                <ComboBoxItem Content="10 minutes" Tag="600"/>
+                <ComboBoxItem Content="30 minutes" Tag="1800"/>
+                <ComboBoxItem Content="1 hour" Tag="3600"/>-->
+
+            </ComboBox>
+
+            <CheckBox
+                x:Name="chkMaxStorage"
+                Content="Limit storage for a file to:"
+                IsChecked="{Binding MaxStorage, UpdateSourceTrigger=PropertyChanged}"
+                Grid.Row="3"
+                Grid.Column="0"/>
+
+            <ComboBox
+                Name="comboMaxStorage"
+                Grid.Row="3"
+                Grid.Column="1"
+                Width="Auto"
+                SelectedIndex="{Binding MaxStorageIndex, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center"
+                >
+
+                <!-- Tag is the number of KB -->
+                <!--<ComboBoxItem Content="64 KB" Tag="64"/>
+                <ComboBoxItem Content="128 KB" Tag="128"/>
+                <ComboBoxItem Content="256 KB" Tag="256"/>
+                <ComboBoxItem Content="512 KB" Tag="512"/>
+                <ComboBoxItem Content="1 MB" Tag="1024"/>
+                <ComboBoxItem Content="10 MB" Tag="10240"/>-->
+
+            </ComboBox>
+
+            <CheckBox
+                x:Name="chkGZIP"
+                Content="Compress (GZIP) files larger than:"
+                IsChecked="{Binding GZIP, UpdateSourceTrigger=PropertyChanged}"
+                Grid.Row="4"
+                Grid.Column="0"/>
+
+            <ComboBox
+                Name="comboGZIP"
+                Grid.Row="4"
+                Grid.Column="1"
+                Width="Auto"
+                SelectedIndex="{Binding GZIPIndex, UpdateSourceTrigger=PropertyChanged}"
+                VerticalAlignment="Center"
+                >
+
+                <!-- Tag is the number of KB -->
+                <!--<ComboBoxItem Content="4 KB" Tag="4"/>
+                <ComboBoxItem Content="8 KB" Tag="8"/>
+                <ComboBoxItem Content="16 KB" Tag="16"/>
+                <ComboBoxItem Content="32 KB" Tag="32"/>
+                <ComboBoxItem Content="64 KB" Tag="64"/>
+                <ComboBoxItem Content="128 KB" Tag="128"/>
+                <ComboBoxItem Content="256 KB" Tag="256"/>
+                <ComboBoxItem Content="512 KB" Tag="512"/>
+                <ComboBoxItem Content="1 MB" Tag="1024"/>-->
+
+            </ComboBox>
+
+        </Grid>
+
+        <TextBox
+            x:Name="txtSettingsLocation"
+            Text="Settings saved here: "
+            Margin="10,5"
+            IsReadOnly="True"
+            BorderThickness="0"
+            Grid.Row="6"
+            FontSize="{Binding SmallerFontSize, UpdateSourceTrigger=PropertyChanged}"/>
+        
+    </Grid>
+    
+</UserControl>

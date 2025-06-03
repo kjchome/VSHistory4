@@ -1,0 +1,130 @@
+﻿<Window x:Class="VSHistory.Help.HelpChooseLocation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSHistory.Help"
+        mc:Ignorable="d"
+        FontSize="13"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        Title="Help Choosing File Locations"
+        Topmost="True"
+        Height="600"
+        Width="500">
+
+    <ScrollViewer Margin="10">
+
+        <Grid>
+
+            <Grid.Resources>
+
+                <Style x:Key="LongText" TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+
+                <Style x:Key="Title" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Margin" Value="10,5" />
+                </Style>
+
+            </Grid.Resources>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+
+                <TextBlock Style="{StaticResource Title}"
+                           Text="Storing VS History Files with the Solution" />
+
+                <Button
+                    Content="Close"
+                    IsCancel="True"
+                    Padding="5,2"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="1">
+                This is usually your best choice if your Visual Studio project
+                has a solution (.sln) file.  The VS History files will be maintained
+                in a hidden subdirectory under the source files.
+                <LineBreak/>
+                <LineBreak/>
+                This choice has the advantages of:
+                <LineBreak/>
+                <LineBreak/>
+                1. The VS History files are kept with the source files, so you can easily
+                copy or archive the project and all the VS History files will be kept
+                with the project.
+                <LineBreak/>
+                <LineBreak/>
+                2. If you move or rename the project folder, the VS History files will
+                still be located with the source files.
+                <LineBreak/>
+                <LineBreak/>
+                NOTE: If the VS History files are maintained with the source files and
+                you use a source control system like git, you may want to add the
+                .vshistory directory to be excluded in the .gitignore file.
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="2"
+                Style="{StaticResource Title}"
+                Text="Storing VS History Files in Alternate Directories" />
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="3">
+                You can choose to store the VS History files in the Local
+                Application Data directory (%LOCALAPPDATA%\VSHistory)
+                or in any other directory you want.
+                <LineBreak/>
+                <LineBreak/>
+                Using an alternate directory has these advantages:
+                <LineBreak/>
+                <LineBreak/>
+                1. All the VS History files for all projects are in the same place,
+                making them easy to search.
+                <LineBreak/>
+                <LineBreak/>
+                2. The VS History files will not be included in backups/archives
+                of your project, thereby reducing the size of the dataset.
+                <LineBreak/>
+                <LineBreak/>
+                However, this choice has the disadvantage that if the project
+                is moved or renamed, the VS History files will no longer be
+                associated with the project.                
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="4"
+                Style="{StaticResource Title}"
+                Text="Default and Solution-specific File Locations" />
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="5">
+                If you have selected "Default settings for all solutions",
+                the file locations apply to all solutions that have not
+                made changes to their settings.
+                <LineBreak/>
+                <LineBreak/>
+                Once a solution has been opened and any settings have been changed
+                by selecting "Settings for this solution",
+                the file locations for that solution will be saved and not affected by
+                changes to the default settings.
+            </TextBlock>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</Window>
