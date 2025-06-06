@@ -1,3 +1,5 @@
+**NOTE:** The version of VSHistory compatible with **Visual Studio 2019** can be found [here](https://marketplace.visualstudio.com/items?itemName=KenCross.VSHistory).
+
 ## VSHistory
 
 VSHistory for Visual Studio saves a copy of your files every time you save them. They are stored in a special `.vshistory` directory and can be opened or differences with the current file can be viewed.   
@@ -154,7 +156,7 @@ It shares much of the code of the actual VSHistory extension but only shows the 
 The VSHistory source code is now available in github.
 
 ## Revision History
-* 4.0 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
+* 4.0.4 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
 * 3.10 Make column widths resizable
 * 3.9 Mouseover of "Size" now shows the true "Size on disk" of a VSHistory version (may be zero for small files)
 * 3.8 Allow non-admin installations (no longer "All Users", so each user must install)
