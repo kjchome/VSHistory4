@@ -6,24 +6,20 @@ VSHistory for Visual Studio saves a copy of your files every time you save them.
 
 A custom VSHistory tool window displays each version of project files as they're saved.  With each version, you can:
 
-* View the difference between that version and you current file.
+* View the difference between that version and your current file.
 * View the difference between that version and another version.
 * Open that version in Visual Studio.
 
-**VSHistory version 4 is a complete re-write of VSHistory** using the [Community.VisualStudio.Toolkit.17](https://www.nuget.org/packages/Community.VisualStudio.Toolkit.17/) package. For details, see [Changes in VSHistory 4](#changes-v4) below.
+**VSHistory version 4 is a complete re-write of VSHistory** using the [Community.VisualStudio.Toolkit.17](https://www.nuget.org/packages/Community.VisualStudio.Toolkit.17/) package. For details, see _Changes in VSHistory 4_ below.
 
 
 ### Current File History
 
-The VSHistory tool window showing the history of the current file (the document that currently has focus) can be displayed from the menu via
-
-**`Extensions | VSHistory | VSHistory Tool Window`**
-
-![Extensions Menu](Images/Extensions_Menu.png){ width="300px" }
+The VSHistory tool window showing the history of the current file (the document that currently has focus) can be displayed from the menu via **`Extensions | VSHistory | VSHistory Tool Window`**
 
 It is recommended that you dock the VSHistory tool window somewhere, such as:
 
-![Full Screen](Images/FullScreen.png)
+![Full Screen](FullScreen.png)
 
 You can view the difference between any version with the current file by clicking **`Diff`** for that version in the VSHistory tool window.  Clicking **`Open`** will simply display that version of the file.
 
@@ -37,7 +33,7 @@ The settings are saved in an XML file in `%LOCALAPPDATA%\VSHistory\Settings.xml`
 
 > **Note:** You must click the **`OK`** button to save any changes to the settings.
 
-![Settings General](Images/Settings_General.png)
+![Settings General](Settings_General.png)
 
 ### General
 
@@ -70,20 +66,22 @@ This will display **all** VSHistory versions for the current solution. You can c
 Double-clicking a version will display a diff of that version with the current file.
 
 The `Delete All` button will delete all VSHistory versions for the current solution.  This is a permanent deletion and cannot be undone.
-`
+
+You can delete individual versions by clicking the `Open` button on the VSHistory Tool Window. This will open the directory containing the versions and you can delete any or all of them. 
+
 > NOTE: When a file in your solution is deleted, its VSHistory versions are kept.  The files that were deleted will have `(deleted)` next to their name.  Double-clicking a version will display that version.
 
-![Settings AllFiles_1](Images/Settings_AllFiles_1.png)
+![Settings AllFiles_1](Settings_AllFiles_1.png)
 
-### Location of VSHistory Files {#location}
+### Location of VSHistory Files
 
 By default, VSHistory files are maintained in subdirectories below the source files.  You can optionally select an alternate location for VSHistory files.
 
 > NOTE: If the VSHistory files are maintained with the source files and you use a source control system like git, you may want to add the `.vshistory` directory to be excluded in the `.gitignore` file.
 
-![Settings Location](Images/Settings_Location.png)
+![Settings Location](Settings_Location.png)
 
-[Help Me Choose the Location](Images/Help_Location.png)
+[Help Me Choose the Location](Help_Location.png)
 
 ### File Exclusions
 
@@ -91,7 +89,7 @@ You can choose to have a variety of files be excluded from VSHistory processing.
 
 > NOTE: Any file exclusions specified in Default Settings apply to **all** solutions.
 
-[Help for File Exclusions](Images/Help_FileExclusions.png)
+[Help for File Exclusions](Help_FileExclusions.png)
 
 ### Directory Exclusions
 
@@ -99,9 +97,9 @@ You can choose to have a variety of directories be excluded from VSHistory proce
 
 > NOTE: Any directory exclusions specified in Default Settings apply to **all** solutions.
 
-[Help for Directory Exclusions](Images/Help_DirExclusions.png)
+[Help for Directory Exclusions](Help_DirExclusions.png)
 
-### Changes in VSHistory 4.0 {#changes-v4}
+### Changes in VSHistory 4.0
 
 #### Updated Settings
 
@@ -111,11 +109,11 @@ The VSHistory settings are now managed in a tabbed window rather than through th
 
 You can now specify settings on a per-solution basis. For example, you can exclude some files or directories from one solution but not another.
 
-You can also have a different location where the VSHistory files are stored for each solution.  The default is to keep the VSHistory files with the solution.  See [Location of VSHistory Files](#location).
+You can also have a different location where the VSHistory files are stored for each solution.  The default is to keep the VSHistory files with the solution.  See _Location of VSHistory Files_.
 
 #### Support for Long Paths
 
-Visual Studio doesn't natively support long paths for files or directories (>260 characters). Since VSHistory can potentially produce long paths, the paths used in VSHistory include the prefix to support long paths, e.g., `\\?\C:\SomeDir\MyProject\Genius.cs`.
+Visual Studio doesn't natively support long paths for files or directories (>260 characters). Since VSHistory can potentially produce long paths, the paths used in VSHistory include the prefix to support long paths, such as `\\?\C:\SomeDir\MyProject\Genius.cs`.
 
 This works regardless of whether or not long paths are enabled in the registry (`HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled `).
 
@@ -124,6 +122,10 @@ This works regardless of whether or not long paths are enabled in the registry (
 The VSHistory Tool Window can now be opened through **`Extensions | VSHistory | VSHistory Tool Window`**. It is no longer shown in `View | Other Windows`. 
 
 Once you open the VSHistory Tool Window, it is recommended to dock it somewhere convenient.
+
+#### Views are Shown in the Preview Window
+
+Views of differences are now shown in the "Preview" or "Provisional" window. You have the option to "pin" the view if you want to keep it around.
 
 #### User-defined Tags are No Longer Supported
 
@@ -151,14 +153,16 @@ It shares much of the code of the actual VSHistory extension but only shows the 
 
 #### Published Source Code
 
-The VSHistory source code is now available in github.
+The VSHistory source code is now available in [GitHub](https://github.com/kjchome/VSHistory4).
 
 ## Revision History
+
+* 4.0.6 Update README.md
 * 4.0.5 Bug fixes and requested improvements
     * Added a `Delete All` button to the **All VSHistory Versions** page to delete all versions for the current solution.
     * Fixed a problem where the right side of the differences page didn't edit the live file.
     * Fixed Bug #1 -- null item when enumerating children.
-* 4.0.4 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
+* 4.0.4 Complete re-write.  See _Changes in VSHistory 4_ above for details.
 * 3.10 Make column widths resizable
 * 3.9 Mouseover of "Size" now shows the true "Size on disk" of a VSHistory version (may be zero for small files)
 * 3.8 Allow non-admin installations (no longer "All Users", so each user must install)
