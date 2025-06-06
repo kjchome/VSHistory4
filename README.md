@@ -69,9 +69,11 @@ This will display **all** VSHistory versions for the current solution. You can c
 
 Double-clicking a version will display a diff of that version with the current file.
 
+The `Delete All` button will delete all VSHistory versions for the current solution.  This is a permanent deletion and cannot be undone.
+`
 > NOTE: When a file in your solution is deleted, its VSHistory versions are kept.  The files that were deleted will have `(deleted)` next to their name.  Double-clicking a version will display that version.
 
-![Settings AllFiles](Images/Settings_AllFiles.png)
+![Settings AllFiles_1](Images/Settings_AllFiles_1.png)
 
 ### Location of VSHistory Files {#location}
 
@@ -152,6 +154,9 @@ It shares much of the code of the actual VSHistory extension but only shows the 
 The VSHistory source code is now available in github.
 
 ## Revision History
+* 4.0.5
+    * Added a `Delete All` button to the **All VSHistory Versions** page to delete all versions for the current solution.
+    * Fixed a problem where the right side of the differences page didn't edit the live file.
 * 4.0.4 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
 * 3.10 Make column widths resizable
 * 3.9 Mouseover of "Size" now shows the true "Size on disk" of a VSHistory version (may be zero for small files)
