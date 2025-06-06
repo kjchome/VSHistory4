@@ -66,7 +66,7 @@ public partial class App : Application
         //  tabGeneral
         //  tabLogging
         //
-        MainWindow mainWindow = new("tabDateFormat");
+        MainWindow mainWindow = new("tabAllFiles");
 
         mainWindow.ShowDialog();
 

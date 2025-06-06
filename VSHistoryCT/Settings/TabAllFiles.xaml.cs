@@ -363,6 +363,66 @@ public partial class TabAllFiles : UserControl
         }
 
         VSLogMsg($"TabAllFiles Loaded: {AllSolutionFiles.Count} files");
+
+        btnDeleteAll.IsEnabled = AllSolutionFiles.Count > 0;
+
         RefreshTreeView();
+    }
+
+    /// <summary>
+    /// Delete all the history files in the solution.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void btnDeleteAll_Click(object sender, RoutedEventArgs e)
+    {
+        int iNumFiles = AllSolutionFiles.Select(f => f.VSHistoryFiles.Count).Sum();
+
+        MessageBoxResult result = MessageBox.Show(
+            $"This will delete {iNumFiles:N0} VSHistory files in this solution.\n\n" +
+            "Are you sure?",
+            "Delete VSHistory Files", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            DeleteAllHistoryFiles();
+            RefreshTreeView();
+        }
+    }
+
+    private void DeleteAllHistoryFiles()
+    {
+        //
+        // Get all the directories that contain the VSHistory files.
+        //
+        List<DirectoryInfo> directoriesToDelete =
+            AllSolutionFiles.Select(f => f.VSHistoryDir).ToList();
+
+        //
+        // Each directory should be a subdirectory of the .vshistory directory.
+        //
+        List<string> vshistoryDirs =
+            directoriesToDelete.Select(d => d.Parent.FullName).Distinct().ToList();
+
+        foreach (string sDir in vshistoryDirs)
+        {
+            DirectoryInfo dir = new(sDir);
+            Debug.Assert(dir.Name == VSHistoryFile.VSHistoryDirName);
+
+            try
+            {
+                //
+                // Delete the directory and its contents.
+                //
+                dir.Delete(true);
+            }
+            catch (Exception ex)
+            {
+                VSLogMsg($"Error deleting {dir.FullName}: {ex.Message}");
+            }
+        }
+
+        AllSolutionFiles.Clear();
+        treeViewFiles.ItemsSource = null;
     }
 }

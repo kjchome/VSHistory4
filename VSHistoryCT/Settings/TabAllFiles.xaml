@@ -59,6 +59,15 @@
                 Margin="6"
                 IsChecked="{Binding radOrderByDate}"/>
 
+            <Button 
+                x:Name="btnDeleteAll"
+                Content="Delete All"
+                ToolTip="Delete all the VSHistory files for this solution.  This cannot be undone."
+                Margin="6,0"
+                VerticalAlignment="Center"
+                Padding="6,0"
+                Click="btnDeleteAll_Click"/>
+            
         </StackPanel>
 
         <TreeView

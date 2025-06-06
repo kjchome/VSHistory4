@@ -1,3 +1,5 @@
+**NOTE:** The version of VSHistory compatible with **Visual Studio 2019** can be found [here](https://marketplace.visualstudio.com/items?itemName=KenCross.VSHistory).
+
 ## VSHistory
 
 VSHistory for Visual Studio saves a copy of your files every time you save them. They are stored in a special `.vshistory` directory and can be opened or differences with the current file can be viewed.   
@@ -67,9 +69,11 @@ This will display **all** VSHistory versions for the current solution. You can c
 
 Double-clicking a version will display a diff of that version with the current file.
 
+The `Delete All` button will delete all VSHistory versions for the current solution.  This is a permanent deletion and cannot be undone.
+`
 > NOTE: When a file in your solution is deleted, its VSHistory versions are kept.  The files that were deleted will have `(deleted)` next to their name.  Double-clicking a version will display that version.
 
-![Settings AllFiles](Images/Settings_AllFiles.png)
+![Settings AllFiles_1](Images/Settings_AllFiles_1.png)
 
 ### Location of VSHistory Files {#location}
 
@@ -121,10 +125,6 @@ The VSHistory Tool Window can now be opened through **`Extensions | VSHistory | 
 
 Once you open the VSHistory Tool Window, it is recommended to dock it somewhere convenient.
 
-#### Views are Shown in the Preview Window
-
-Views of differences are now shown in the "Preview" or "Provisional" window. You have the option to "pin" the view if you want to keep it around.
-
 #### User-defined Tags are No Longer Supported
 
 I think this feature was rarely used and added complexity. If there is enough demand, I will consider restoring it.
@@ -154,7 +154,11 @@ It shares much of the code of the actual VSHistory extension but only shows the 
 The VSHistory source code is now available in github.
 
 ## Revision History
-* 4.0 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
+* 4.0.5 Bug fixes and requested improvements
+    * Added a `Delete All` button to the **All VSHistory Versions** page to delete all versions for the current solution.
+    * Fixed a problem where the right side of the differences page didn't edit the live file.
+    * Fixed Bug #1 -- null item when enumerating children.
+* 4.0.4 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
 * 3.10 Make column widths resizable
 * 3.9 Mouseover of "Size" now shows the true "Size on disk" of a VSHistory version (may be zero for small files)
 * 3.8 Allow non-admin installations (no longer "All Users", so each user must install)
