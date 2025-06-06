@@ -123,10 +123,6 @@ The VSHistory Tool Window can now be opened through **`Extensions | VSHistory | 
 
 Once you open the VSHistory Tool Window, it is recommended to dock it somewhere convenient.
 
-#### Views are Shown in the Preview Window
-
-Views of differences are now shown in the "Preview" or "Provisional" window. You have the option to "pin" the view if you want to keep it around.
-
 #### User-defined Tags are No Longer Supported
 
 I think this feature was rarely used and added complexity. If there is enough demand, I will consider restoring it.
