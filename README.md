@@ -154,9 +154,10 @@ It shares much of the code of the actual VSHistory extension but only shows the 
 The VSHistory source code is now available in github.
 
 ## Revision History
-* 4.0.5
+* 4.0.5 Bug fixes and requested improvements
     * Added a `Delete All` button to the **All VSHistory Versions** page to delete all versions for the current solution.
     * Fixed a problem where the right side of the differences page didn't edit the live file.
+    * Fixed Bug #1 -- null item when enumerating children.
 * 4.0.4 Complete re-write.  See [Changes in VSHistory 4](#changes-v4)
 * 3.10 Make column widths resizable
 * 3.9 Mouseover of "Size" now shows the true "Size on disk" of a VSHistory version (may be zero for small files)
