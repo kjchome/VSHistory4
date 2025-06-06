@@ -118,6 +118,11 @@ public class SolutionInfo
         //
         foreach (SolutionItem item in obj.Children!)
         {
+            if (item == null)
+            {
+                continue;
+            }
+
             switch (item.Type)
             {
                 case SolutionItemType.PhysicalFile:
