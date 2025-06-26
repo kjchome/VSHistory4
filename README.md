@@ -157,6 +157,7 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.0.7 The current live project file is now saved with the previous versions whenever you save a file.
 * 4.0.6 Update README.md
 * 4.0.5 Bug fixes and requested improvements
     * Added a `Delete All` button to the **All VSHistory Versions** page to delete all versions for the current solution.

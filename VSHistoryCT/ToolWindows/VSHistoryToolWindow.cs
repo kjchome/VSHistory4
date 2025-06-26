@@ -33,10 +33,6 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
 
         if (null == g_VSControl)
         {
-            //
-            // The tool windows isn't active, but try to set its caption.
-            //
-            SetToolWindowCaption(filePath);
             return;
         }
 
@@ -77,7 +73,10 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
             if (fiNewFile.FullName == fiLatest.FullName &&
                 fiNewFile.LastWriteTimeUtc == fiLatest.LastWriteTimeUtc)
             {
-                VSLogMsg($"Don't refresh the same file {fiNewFile.Name}", Severity.Verbose);
+                //
+                // This gets annoying...
+                //
+                //VSLogMsg($"Don't refresh the same file {fiNewFile.Name}", Severity.Verbose);
                 return;
             }
         }
@@ -91,7 +90,7 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
         //
         // Update the tool window.
         //
-        SetToolWindowCaption(vsHistoryFile.FullPath);
+        SetToolWindowCaption(vsHistoryFile);
 
         //
         // Remove all previous history files and build a new list.
@@ -148,7 +147,12 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
         control.Resources["buttonBackground"] = new SolidColorBrush(background);
     }
 
-    public static void SetToolWindowCaption(string? sPath = null)
+    /// <summary>
+    /// Set the caption of the Tool Window to indicate
+    /// the number of VSHistory files are available.
+    /// </summary>
+    /// <param name="vsFile"></param>
+    public static void SetToolWindowCaption(VSHistoryFile vsFile)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -160,29 +164,6 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
             VSLogMsg("No tool window pane", Severity.Warning);
             return;
         }
-
-        //
-        // If a path wasn't specified, get the currently active
-        // document, if any.
-        //
-        if (string.IsNullOrEmpty(sPath))
-        {
-            sPath = GetActiveDocument();
-        }
-
-        if (string.IsNullOrEmpty(sPath))
-        {
-            VSLogMsg("No active document", Severity.Info);
-            return;
-        }
-
-        //
-        // Find the VSHistoryFile.
-        //
-        VSHistoryFile vsFile = AllSolutionFiles
-            .Where(p => p.FullPath == sPath).FirstOrDefault();
-
-        vsFile ??= new(sPath!);
 
         string sCaption =
                 $"{vsFile.NumHistoryFiles:N0} VS History Files for {vsFile.Name}";

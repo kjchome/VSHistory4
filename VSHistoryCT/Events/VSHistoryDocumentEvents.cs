@@ -193,6 +193,28 @@ internal class VSHistoryDocumentEvents :
 #if LOG_HERE
         VSLogMsg("Here. " + DocName(docCookie), Severity.Verbose);
 #endif
+
+        ThreadHelper.ThrowIfNotOnUIThread();
+
+        RunningDocumentInfo rdi = _rdt.GetDocumentInfo(docCookie);
+        string sMoniker = rdi.Moniker;
+        string sPath = LongPath(sMoniker);
+
+        try
+        {
+            //
+            // Create a VSHistory file from the current file and save it.
+            //
+            VSHistoryFile vsHistoryFile = new VSHistoryFile(sPath);
+            vsHistoryFile.SaveCurrentFile();
+
+            RefreshVSHistoryWindow(sMoniker, true);
+        }
+        catch (Exception e)
+        {
+            VSLogMsg($"Exception saving {DocName(docCookie)} : {e}", Severity.Error);
+        }
+
         return VSConstants.S_OK;
     }
 

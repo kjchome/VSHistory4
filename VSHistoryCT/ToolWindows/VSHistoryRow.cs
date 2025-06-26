@@ -23,6 +23,8 @@ public class VSHistoryRow
     /// </summary>
     public string PrettyWhenSaved => PrettyDateTime(VSHistoryFileInfo);
 
+    private string? _SizeOnDisk = null;
+
     /// <summary>
     /// Actual size on disk.  The history file is compressed, so if it's
     /// greater than the cluster size (typically 4K), this will be some
@@ -32,18 +34,21 @@ public class VSHistoryRow
     {
         get
         {
-            //
-            // Size on disk in KB, where 1 KB = 1024 bytes.
-            // Since the size is in clusters, it will always be a multiple of 1024.
-            //
-            long lSize = GetSizeOnDisk(VSHistoryFileInfo, g_VSControl!.ClusterSize) / 1024;
-
-            string sSize = $"Size on disk: {lSize:N0} KB";
-            if (VSHistoryFileInfo.Extension == ".gz")
+            if (_SizeOnDisk == null)
             {
-                sSize += " (GZIP)";
+                //
+                // Size on disk in KB, where 1 KB = 1024 bytes.
+                // Since the size is in clusters, it will always be a multiple of 1024.
+                //
+                long lSize = GetSizeOnDisk(VSHistoryFileInfo, g_VSControl!.ClusterSize) / 1024;
+
+                _SizeOnDisk = $"Size on disk: {lSize:N0} KB";
+                if (VSHistoryFileInfo.Extension == ".gz")
+                {
+                    _SizeOnDisk += " (GZIP)";
+                }
             }
-            return sSize;
+            return _SizeOnDisk;
         }
     }
 

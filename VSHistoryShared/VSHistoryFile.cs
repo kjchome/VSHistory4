@@ -433,31 +433,91 @@ public class VSHistoryFile
         CreatePath();
 
         FileInfo fileHistoryFile = BuildHistoryFile();
-        VSLogMsg("Save " + fileHistoryFile.FullName);
 
         if (!fileHistoryFile.Exists)
         {
-            //
-            // Copy this as a history file.
-            //
-            ZipIt(VSFileInfo, fileHistoryFile);
-
-            //
-            // Get all the files and save them in reverse order (most recent first).
-            //
-            _VSHistoryFiles = [.. VSHistoryDir.GetFiles(VSHistoryFilenameMask)];
-            _VSHistoryFiles.Reverse();
-
-            //
-            // Purge history files in case we've exceeded some limit.
-            //
-            PurgeHistoryFile(this);
+            SaveAndPurge(fileHistoryFile);
         }
         else if (fileHistoryFile.Length != VSFileInfo.Length)
         {
             Debug.Assert(fileHistoryFile.Length == VSFileInfo.Length,
                 string.Format("Existing {0} {1} bytes, expected {2} bytes",
                 fileHistoryFile.FullName, fileHistoryFile.Length, VSFileInfo.Length));
+        }
+        else
+        {
+            VSLogMsg("VSHistory file exists: " + fileHistoryFile.FullName);
+        }
+    }
+
+    /// <summary>
+    /// Save the current file state to the specified history file
+    /// and purge old history files if necessary.
+    /// </summary>
+    /// <remarks>
+    /// This method saves the current file state by creating a
+    /// history file and ensures that the history directory does not
+    /// exceed the allowed limits by purging older history files.
+    /// The files are processed in reverse chronological order (most recent first).
+    /// </remarks>
+    /// <param name="fileHistoryFile">
+    /// The <see cref="FileInfo"/> object representing the target
+    /// history file where the current file state will be saved.
+    /// </param>
+    private void SaveAndPurge(FileInfo fileHistoryFile)
+    {
+        ThreadHelper.ThrowIfNotOnUIThread();
+        
+        VSLogMsg("Save " + fileHistoryFile.FullName);
+
+        //
+        // Copy this as a history file, GZIPing if appropriate.
+        //
+        ZipIt(VSFileInfo, fileHistoryFile);
+
+        //
+        // Get all the files and save them in reverse order (most recent first).
+        //
+        _VSHistoryFiles = [.. VSHistoryDir.GetFiles(VSHistoryFilenameMask)];
+        _VSHistoryFiles.Reverse();
+
+        //
+        // Purge history files in case we've exceeded some limit.
+        //
+        PurgeHistoryFile(this);
+    }
+
+    /// <summary>
+    /// Save the current file as a VSHistory file.
+    /// </summary>
+    public void SaveCurrentFile()
+    {
+        //
+        // Quick exit for an empty file.
+        //
+        if (!VSFileInfo.Exists || VSFileInfo.Length == 0)
+        {
+            VSLogMsg("Skipping empty file " + VSFileInfo.Name);
+            return;
+        }
+
+        ThreadHelper.ThrowIfNotOnUIThread();
+        
+        try
+        {
+            CreatePath();
+
+            FileInfo fileHistoryFile = BuildHistoryFile();
+
+            //
+            // Include this in the list of VSHistory files.
+            //
+            SaveAndPurge(fileHistoryFile);
+        }
+        catch (Exception ex)
+        {
+            VSLogMsg($"Failed to copy to {VSFileInfo.FullName} -- {ex.Message}",
+                Severity.Error);
         }
     }
 }
