@@ -157,6 +157,7 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.0.8 Fixed a problem where VSHistory would fail to load when Visual Studio was opened with a single file and no solution.
 * 4.0.7 The current live project file is now saved with the previous versions whenever you save a file.
 * 4.0.6 Update README.md
 * 4.0.5 Bug fixes and requested improvements

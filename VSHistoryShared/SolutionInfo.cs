@@ -189,6 +189,12 @@ public class SolutionInfo
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
         TheIVsSolution = await VS.Services.GetSolutionAsync();
+        if (TheIVsSolution == null)
+        {
+            VSLogMsg("IVsSolution is null.", Severity.Detail);
+            return;
+        }
+
         if (!TheIVsSolution.IsOpen())
         {
             VSLogMsg("Solution is not open.", Severity.Detail);
@@ -199,10 +205,20 @@ public class SolutionInfo
         // Get the Solution.
         //
         TheSolution = (Solution?)await IVsSolutionExtensions.ToSolutionItemAsync(TheIVsSolution);
-        Assumes.NotNull(TheSolution);
-        Assumes.NotNullOrEmpty(TheSolution.FullPath);
 
-        SolutionPath = LongPath(TheSolution.FullPath);
+        if (TheSolution == null)
+        {
+            VSLogMsg("TheSolution is null.", Severity.Detail);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(TheSolution.FullPath))
+        {
+            VSLogMsg("The Solution Path is null or empty.", Severity.Detail);
+            return;
+        }
+
+        SolutionPath = LongPath(TheSolution.FullPath!);
 
         VSLogMsg($"Solution: {SolutionPath}", Severity.Detail);
 
@@ -215,7 +231,7 @@ public class SolutionInfo
         //
         // Process all the .vshistory directories under the solution directory.
         // This will find most of the files with VSHistory versions, including
-        // files that have been delete and are no longer part of the solution.
+        // files that have been deleted and are no longer part of the solution.
         // This is useful when displaying "All Files".
         //
         ProcessDirs(Path.GetDirectoryName(SolutionPath));
