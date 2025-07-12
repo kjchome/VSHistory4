@@ -282,6 +282,47 @@ public partial class MainWindow : Window
             return;
         }
 
+        //
+        // Warn the user if the default settings have changed
+        // and ask if they should be applied to this solution.
+        //
+        if (AllVsSettings.Count > 1 &&
+            VS_OriginalDefaultSettings != null &&
+            !VS_OriginalDefaultSettings.Equals(DefaultSettings))
+        {
+            string sMsg =
+                "You have changed the default settings.\n\n" +
+
+                "NOTE: These changes may not apply to other solutions.\n" +
+                "If you want to apply the changes to those solutions,\n" +
+                "you must open each solution and review their settings.\n\n" +
+
+                "Do you want to apply the default settings to the\n" +
+                $"current solution ({SolutionName})?";
+
+            MessageBoxResult result = MessageBox.Show(sMsg,
+                "Default Settings Changed",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                //
+                // User canceled, so don't save the XML.
+                //
+                return;
+            }
+
+            if (result == MessageBoxResult.Yes)
+            {
+                //
+                // User chose to apply the default settings,
+                // so copy the default settings to the current solution.
+                //
+                CopyDefaultToSolution();
+            }
+        }
+
         try
         {
             //
@@ -294,20 +335,22 @@ public partial class MainWindow : Window
             // Overwrite the settings file, creating it if necessary.
             // PruneSettings will remove keys that are the same as the default.
             //
-            DialogResult = SaveXml(PruneSettings());
+            // If there is a problem saving the settings (unlikely),
+            // an exception will be thrown and caught below.
+            //
+            SaveXml(PruneSettings());
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Failed to save settings: {ex.Message}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
         }
-        finally
-        {
-            //
-            // Close the window.
-            //
-            btnCloseMain_Click(sender, e);
-        }
+
+        //
+        // Close the window.
+        //
+        btnCloseMain_Click(sender, e);
     }
 
     /// <summary>

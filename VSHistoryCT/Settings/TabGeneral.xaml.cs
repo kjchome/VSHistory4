@@ -80,7 +80,7 @@ public partial class TabGeneral : UserControl
 
         MainWindow.VSSettingsMainWindow!.DataContext = null;
 
-        VsSettings.CopyDefaultToSolution();
+        CopyDefaultToSolution();
 
         MainWindow.VSSettingsMainWindow.RefreshTabsWithNewSettings();
 

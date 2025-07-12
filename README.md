@@ -157,6 +157,7 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.0.9 Warn the user when the Default settings are changed and ask if they want to copy the Default settings to current solution.
 * 4.0.8 Fixed a problem where VSHistory would fail to load when Visual Studio was opened with a single file and no solution.
 * 4.0.7 The current live project file is now saved with the previous versions whenever you save a file.
 * 4.0.6 Update README.md

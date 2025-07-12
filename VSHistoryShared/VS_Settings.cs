@@ -107,6 +107,59 @@ public class VS_Settings : ICloneable
     }
 
     /// <summary>
+    /// Determines whether the specified VS_Settings is equal to the current VS_Settings.
+    /// </summary>
+    /// <param name="obj">
+    /// The VS_Settings to compare with the current VS_Settings.
+    /// </param>
+    /// <returns>
+    /// True if the specified object is equal to the current VS_Settings; otherwise, false.
+    /// </returns>
+    /// <remarks>
+    /// The input VS_Settings is converted to XML and compared
+    /// to the current VS_Settings converted to XML. Note that this
+    /// includes the ExcludedDirs and ExcludedFiles and the name,
+    /// so it must be an exact match to be considered equal.
+    /// </remarks>
+    public override bool Equals(object obj)
+    {
+        VS_Settings settings = (VS_Settings)obj;
+
+        XmlSerializer xmlSerializer = new XmlSerializer(typeof(VS_Settings));
+
+        //
+        // Convert the input settings to XML.
+        //
+        string settingsXML;
+        using (StringWriter textWriter = new())
+        {
+            xmlSerializer.Serialize(textWriter, settings);
+            settingsXML = textWriter.ToString();
+        }
+
+        //
+        // Convert the current settings to XML.
+        //
+        string defXML;
+        using (StringWriter textWriter = new())
+        {
+            xmlSerializer.Serialize(textWriter, this);
+            defXML = textWriter.ToString();
+        }
+
+        return settingsXML == defXML;
+    }
+
+    /// <summary>
+    /// Required if Equals is overridden.
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    /// <summary>
     /// Indicate if we are editing the settings
     /// and, if so, which settings we are editing.
     /// </summary>
@@ -222,14 +275,32 @@ public class VS_Settings : ICloneable
             //
             _AllVsSettings ??= [new VS_Settings()];
 
+            //
+            // Save the original default settings read from the XML file.
+            //
+            VS_OriginalDefaultSettings ??= _AllVsSettings[0].FullClone();
+
             return _AllVsSettings;
         }
     }
 
     /// <summary>
+    /// Represents the original default settings read from the XML file.
+    /// </summary>
+    /// <remarks>
+    /// This field provides access to the default configuration settings as they were originally
+    /// defined. It can be used to reset or compare current settings against the default values.
+    /// </remarks>
+    public static VS_Settings? VS_OriginalDefaultSettings = null;
+
+    /// <summary>
     /// Reset AllVsSettings to force them to be read from saved settings.
     /// </summary>
-    public static void ResetAllSettings() => _AllVsSettings = null;
+    public static void ResetAllSettings()
+    {
+        _AllVsSettings = null;
+        VS_OriginalDefaultSettings = null;
+    }
 
     /// <summary>
     /// The singleton VS_Settings instance.
@@ -572,7 +643,7 @@ public class VS_Settings : ICloneable
     /// <summary>
     /// Copy the settings from the default to the current solution.
     /// </summary>
-    public void CopyDefaultToSolution()
+    public static void CopyDefaultToSolution()
     {
         Debug.Assert(!string.IsNullOrWhiteSpace(SolutionName));
         Debug.Assert(AllVsSettings.Count > 1);
@@ -674,8 +745,10 @@ public class VS_Settings : ICloneable
     /// Convert the VS_Settings instance to an XML string
     /// and write it to the XML file.
     /// </summary>
-    /// <returns></returns>
-    public static bool SaveXml(List<VS_Settings> vsSettings)
+    /// <exception cref="Exception">
+    /// Thrown when saving XML fails.
+    /// </exception>
+    public static void SaveXml(List<VS_Settings> vsSettings)
     {
         //
         // Synchronize between possible multiple processes.
@@ -708,14 +781,12 @@ public class VS_Settings : ICloneable
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to write XML: {ex}");
-                return false;
+                throw;
             }
             finally
             {
                 mutex.ReleaseMutex();
             }
-
-            return true;
         }
     }
 }
