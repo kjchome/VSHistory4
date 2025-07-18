@@ -310,6 +310,13 @@ public class SolutionInfo
         //
         VSLogMsg("Parent directory: " + sParentDirectory, Severity.Verbose);
 
+        if (!Directory.Exists(sParentDirectory))
+        {
+            VSLogMsg($"Parent directory doesn't exist: {sParentDirectory}",
+                Severity.Warning);
+            return;
+        }
+
         //
         // Each .vshistory directory can contain subdirectories with the filenames.
         // The filenames should exist in the parent directory of the .vshistory directory,
