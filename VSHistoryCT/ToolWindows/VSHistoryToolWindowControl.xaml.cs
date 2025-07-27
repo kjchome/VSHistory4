@@ -58,6 +58,8 @@ public partial class VSHistoryToolWindowControl : UserControl
             return;
         }
 
+        version_files.ForEach(x => x.Checked = false);
+
         //
         // Show the difference between the two versions.
         // The Tool Window will be refreshed when the

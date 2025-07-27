@@ -1,15 +1,32 @@
-﻿namespace VSHistory;
+﻿using System.ComponentModel;
+
+namespace VSHistory;
 
 /// <summary>
 /// A row displayed in the VSHistory tool window.
 /// </summary>
-public class VSHistoryRow
+public class VSHistoryRow : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private bool @checked = false;
+
     /// <summary>
     /// State of the checked box.  If 2 boxes are checked, then the
     /// difference between those 2 VS History files will be displayed.
     /// </summary>
-    public bool Checked { get; set; } = false;
+    public bool Checked
+    {
+        get => @checked;
+        set
+        {
+            if (@checked != value)
+            {
+                @checked = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Checked)));
+            }
+        }
+    }
 
     /// <summary>
     /// Get the size of the history file.

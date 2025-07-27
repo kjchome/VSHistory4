@@ -238,7 +238,23 @@ internal class VSHistoryDocumentEvents :
     {
         ThreadHelper.ThrowIfNotOnUIThread();
 
+        //No history for comparison file
+        //haven't found any other way to judge besides comparing text at the moment
+        if (pFrame.GetProperty((int)__VSFPROPID5.VSFPROPID_OverrideToolTip, out var toolTipValue) == 0
+            && toolTipValue is string toolTip
+            && FileDifferenceClass.ComparisonWindowToolTip.Equals(toolTip, StringComparison.Ordinal))
+        {
+            return VSConstants.S_OK;
+        }
+
         string file = _rdt.GetDocumentInfo(docCookie).Moniker;
+        
+        //No history for history file
+        if (file.StartsWith(LongPath(AlternateDirectory)))
+        {
+            return VSConstants.S_OK;
+        }
+
         RefreshVSHistoryWindow(file);
 
         return VSConstants.S_OK;

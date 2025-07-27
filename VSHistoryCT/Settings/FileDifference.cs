@@ -3,6 +3,11 @@
 internal class FileDifferenceClass
 {
     /// <summary>
+    /// ToolTip for ComparisonWindow to confirm window type.
+    /// </summary>
+    public const string ComparisonWindowToolTip = "[VSHistory Comparison]";
+
+    /// <summary>
     /// Display a difference window in Visual Studio between 2 files.
     ///
     /// The current filename looks like:
@@ -139,7 +144,7 @@ internal class FileDifferenceClass
                 sLeftFile,
                 sRightFile,
                 "VSHistory of " + sBaseFilename,
-                null,
+                ComparisonWindowToolTip,
                 sLeftLabel,
                 sRightLabel,
                 null,
