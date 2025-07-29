@@ -194,6 +194,11 @@ internal class VSHistoryDocumentEvents :
         VSLogMsg("Here. " + DocName(docCookie), Severity.Verbose);
 #endif
 
+        if (!VsSettings.Enabled)
+        {
+            return VSConstants.S_OK;
+        }
+
         ThreadHelper.ThrowIfNotOnUIThread();
 
         RunningDocumentInfo rdi = _rdt.GetDocumentInfo(docCookie);

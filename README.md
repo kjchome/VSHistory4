@@ -157,6 +157,7 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.0.12 Fixed a regression problem introduced in 4.0.7 where the current file was saved even if VSHistory was disabled.
 * 4.0.11 Changed so that when the difference of two versions is selected using the checkboxes, both sides of the differences page are read-only.
 * 4.0.10 Fixed problem where a solution references a non-existent project.
 * 4.0.9 Warn the user when the Default settings are changed and ask if they want to copy the Default settings to current solution.
