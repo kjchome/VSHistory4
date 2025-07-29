@@ -64,10 +64,14 @@ public partial class VSHistoryToolWindowControl : UserControl
         // user returns to the original file, so the
         // checkboxes will be cleared.
         //
+        // Set the option to make the right file read-only.
+        // This is the VSHistory file, so it should be read-only.
+        //
         ThreadHelper.ThrowIfNotOnUIThread();
         FileDifferenceClass.FileDifference(
             version_files[0].VSHistoryFileInfo,
-            version_files[1].VSHistoryFileInfo);
+            version_files[1].VSHistoryFileInfo,
+            true);
     }
 
     /// <summary>

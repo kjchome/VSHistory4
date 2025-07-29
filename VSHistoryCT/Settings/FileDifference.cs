@@ -22,7 +22,11 @@ internal class FileDifferenceClass
     /// in which case it may or may not be compressed, or the real (current) file.
     /// If compressed, uncompress to a temporary file before displaying the difference.
     /// </param>
-    public static void FileDifference(FileInfo fLeftFileIn, FileInfo fRightFileIn)
+    /// <param name="bMakeRightReadonly">
+    /// If true, the right file will be opened in read-only mode.
+    /// </param>
+    public static void FileDifference(FileInfo fLeftFileIn, FileInfo fRightFileIn,
+        bool bMakeRightReadonly = false)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -93,6 +97,16 @@ internal class FileDifferenceClass
             }
 
             if (fRightFile != fRightFileIn)
+            {
+                diffOptions |= (uint)__VSDIFFSERVICEOPTIONS.VSDIFFOPT_RightFileIsTemporary;
+            }
+
+            //
+            // If the right file is to be opened in read-only mode, then
+            // set the RightFileIsTemporary option to fool the difference
+            // service into thinking it's a temporary file and thus read-only.
+            //
+            if (bMakeRightReadonly)
             {
                 diffOptions |= (uint)__VSDIFFSERVICEOPTIONS.VSDIFFOPT_RightFileIsTemporary;
             }
