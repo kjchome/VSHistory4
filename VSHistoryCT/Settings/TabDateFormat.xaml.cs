@@ -36,22 +36,22 @@ public partial class TabDateFormat : UserControl
 
         Date_Long.Content =
             dateTime.ToString("dddd, ", cultureUI) +
-            dateTime.ToString("d ", cultureUI) +
+            dateTime.ToString("d", cultureUI) + " " +
             dateTime.ToString("T", cultureUI);
 
         Date_Short.Content =
             dateTime.ToString("ddd ", cultureUI) +
-            dateTime.ToString("d ", cultureUI) +
+            dateTime.ToString("d", cultureUI) + " " +
             dateTime.ToString("T", cultureUI);
 
         Date_LongCurrent.Content =
             dateTime.ToString("dddd, ", culture) +
-            dateTime.ToString("d ", culture) +
+            dateTime.ToString("d", culture) + " " +
             dateTime.ToString("T", culture);
         
         Date_ShortCurrent.Content =
             dateTime.ToString("ddd ", culture) +
-            dateTime.ToString("d ", culture) +
+            dateTime.ToString("d", culture) + " " +
             dateTime.ToString("T", culture);
 
         if (culture.Name == cultureUI.Name)
