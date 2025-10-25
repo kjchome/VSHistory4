@@ -21,8 +21,8 @@ internal sealed class SearchCommand : BaseCommand<SearchCommand>
         //
         // Open the Search window.
         //
-        SearchFiles searchFiles = new(g_VSControl.LatestHistoryFile.VSHistoryDir.FullName);
-        searchFiles.FontSize = VsSettings.NormalFontSize;
+        SearchFiles searchFiles = new();
+
         searchFiles.ShowDialog();
     }
 }

@@ -41,7 +41,7 @@ public partial class App : Application
         //
         // To test the SearchFiles window.
         //
-        SearchFiles sSearch = new(@"C:\Users\kjcho\source\repos\VSHistory4\VSHistoryCT\.vshistory\VSHistoryCT.csproj");
+        SearchFiles sSearch = new();
         sSearch.ShowDialog();
 
         //

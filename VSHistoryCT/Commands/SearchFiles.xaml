@@ -10,7 +10,7 @@
         Loaded="Window_Loaded"
         Height="500"
         Width="600">
-
+    
     <Grid>
 
         <Grid.Resources>
@@ -20,9 +20,9 @@
                 <Setter Property="Padding" Value="8,0"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
-
+            
         </Grid.Resources>
-
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -41,13 +41,11 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-
+            
             <TextBlock Text="Search VS History Files" Grid.Column="0" />
 
             <Button
-                x:Name="btnOpenCmd"
                 Content="Open Command Prompt"
-                Click="btnOpenCmd_Click"
                 Grid.Column="1"/>
 
             <Button
@@ -75,16 +73,12 @@
                 x:Name="chkIgnoreCase"
                 Content="_Ignore Case"
                 Margin="5"
-                Checked="chk_Checked"
-                Unchecked="chk_Checked"
                 />
 
             <CheckBox
                 x:Name="chkRegularExpression"
                 Content="_Regular Expression"
                 Margin="5"
-                Checked="chk_Checked"
-                Unchecked="chk_Checked"
                 />
 
         </StackPanel>
@@ -98,11 +92,7 @@
 
             <TextBlock Text="Search string:" Grid.Column="0" VerticalAlignment="Center"/>
 
-            <TextBox
-                x:Name="txtSearch"
-                Grid.Column="1"
-                TextChanged="txtSearch_TextChanged"
-                Margin="5"/>
+            <TextBox x:Name="txtSearch" Grid.Column="1" Margin="5"/>
 
         </Grid>
 
@@ -110,28 +100,21 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="289*"/>
-                <ColumnDefinition Width="205*"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Command:" Grid.Column="0" Margin="5,0,288,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+            <TextBlock Text="Command:" Grid.Column="0" VerticalAlignment="Center"/>
 
-            <TextBox
-                x:Name="txtCommand"
-                Grid.Column="1"
-                TextChanged="txtCommand_TextChanged"
-                Margin="5,5,5,5" Grid.ColumnSpan="2"/>
+            <TextBox x:Name="txtCommand" Grid.Column="1" Margin="5"/>
 
             <Button
                 x:Name="btnGo"
                 Content="_Go"
                 IsDefault="True"
-                Grid.Column="3"
-                IsEnabled="False"
-                Click="btnGo_Click"
-                Margin="5,0,5,0"/>
-
+                Grid.Column="2"
+                Margin="5"/>
+            
         </Grid>
 
         <Separator Grid.Row="6"/>
@@ -148,5 +131,5 @@
             />
 
     </Grid>
-
+    
 </Window>
