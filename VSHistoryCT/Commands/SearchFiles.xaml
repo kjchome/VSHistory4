@@ -1,0 +1,135 @@
+﻿<Window x:Class="VSHistory.SearchFiles"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSHistory"
+        mc:Ignorable="d"
+        Title="Search Files"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        Height="500"
+        Width="600">
+    
+    <Grid>
+
+        <Grid.Resources>
+
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="10,0"/>
+                <Setter Property="Padding" Value="8,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="5">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Search VS History Files" Grid.Column="0" />
+
+            <Button
+                Content="Open Command Prompt"
+                Grid.Column="1"/>
+
+            <Button
+                Content="Close"
+                IsCancel="True"
+                Grid.Column="2"/>
+
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="2">
+
+            <TextBlock Text="Directory:"/>
+
+            <TextBox
+                x:Name="txtDirectory"
+                Text="Dir goes here"
+                IsReadOnly="True"
+                Margin="5,0"/>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3">
+
+            <CheckBox
+                x:Name="chkIgnoreCase"
+                Content="_Ignore Case"
+                Margin="5"
+                />
+
+            <CheckBox
+                x:Name="chkRegularExpression"
+                Content="_Regular Expression"
+                Margin="5"
+                />
+
+        </StackPanel>
+
+        <Grid Grid.Row="4" Margin="5">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Search string:" Grid.Column="0" VerticalAlignment="Center"/>
+
+            <TextBox x:Name="txtSearch" Grid.Column="1" Margin="5"/>
+
+        </Grid>
+
+        <Grid Grid.Row="5" >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Command:" Grid.Column="0" VerticalAlignment="Center"/>
+
+            <TextBox x:Name="txtCommand" Grid.Column="1" Margin="5"/>
+
+            <Button
+                x:Name="btnGo"
+                Content="_Go"
+                IsDefault="True"
+                Grid.Column="2"
+                Margin="5"/>
+            
+        </Grid>
+
+        <Separator Grid.Row="6"/>
+
+        <TextBox
+            x:Name="txtOutput"
+            Grid.Row="7"
+            Margin="5"
+            FontFamily="Consolas"
+            Background="Black"
+            Foreground="White"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            />
+
+    </Grid>
+    
+</Window>

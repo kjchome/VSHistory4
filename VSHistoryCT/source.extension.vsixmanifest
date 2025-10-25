@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="VSHistory2022.95fbcf1c-4aa4-4c3d-bb67-af0b2792132b" Version="4.0.13" Language="en-US" Publisher="Ken Cross" />
+        <Identity Id="VSHistory2022.95fbcf1c-4aa4-4c3d-bb67-af0b2792132b" Version="4.0.14" Language="en-US" Publisher="Ken Cross" />
         <DisplayName>VSHistory 2022 -- Visual Studio File Histories</DisplayName>
         <Description xml:space="preserve">VSHistory maintains the history of files in your Visual Studio 2022+ projects every time they are saved.  Any saved version can be viewed or a diff with the current version can be displayed.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=KenCross.VSHistory2022</MoreInfo>

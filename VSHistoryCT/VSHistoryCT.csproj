@@ -55,6 +55,10 @@
   <ItemGroup>
     <Compile Include="Commands\AllFilesCommand.cs" />
     <Compile Include="Commands\OpenCommand.cs" />
+    <Compile Include="Commands\SearchCommand.cs" />
+    <Compile Include="Commands\SearchFiles.xaml.cs">
+      <DependentUpon>SearchFiles.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Events\SettingsWatcher.cs" />
     <Compile Include="Events\VSHistoryDocumentEvents.cs" />
@@ -133,6 +137,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ToolWindows\VSHistoryToolWindow.cs" />
+    <Page Include="Commands\SearchFiles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Help\HelpChooseLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
