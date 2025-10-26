@@ -38,16 +38,7 @@ public partial class App : Application
     /// <param name="e"></param>
     public void Application_Startup(object sender, StartupEventArgs e)
     {
-        //
-        // To test the SearchFiles window.
-        //
-        SearchFiles sSearch = new();
-        sSearch.ShowDialog();
-
-        //
-        // To test the Settings window.
-        //
-        //TestStartup();
+        TestStartup();
     }
 
     private void TestStartup([CallerFilePath] string sourceFilePath = "")

@@ -459,11 +459,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="..\VSHistoryCT\Commands\SearchFiles.xaml">
-      <Link>SearchFiles.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="..\VSHistoryCT\Help\HelpChooseLocation.xaml">
       <Link>Help\HelpChooseLocation.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -519,10 +514,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\VSHistoryCT\Commands\SearchFiles.xaml.cs">
-      <Link>SearchFiles.xaml.cs</Link>
-      <DependentUpon>SearchFiles.xaml</DependentUpon>
-    </Compile>
     <Compile Include="..\VSHistoryCT\Events\SettingsWatcher.cs">
       <Link>Events\SettingsWatcher.cs</Link>
     </Compile>
@@ -631,6 +622,7 @@
   <Import Project="..\VSHistoryCT\packages\Microsoft.VisualStudio.SDK.Analyzers.17.7.47\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\VSHistoryCT\packages\Microsoft.VisualStudio.SDK.Analyzers.17.7.47\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
   <Import Project="..\VSHistoryCT\packages\Microsoft.VsSDK.CompatibilityAnalyzer.17.13.2126\build\Microsoft.VsSDK.CompatibilityAnalyzer.targets" Condition="Exists('..\VSHistoryCT\packages\Microsoft.VsSDK.CompatibilityAnalyzer.17.13.2126\build\Microsoft.VsSDK.CompatibilityAnalyzer.targets')" />
   <Import Project="..\VSHistoryCT\packages\Microsoft.VSSDK.BuildTools.17.13.2126\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\VSHistoryCT\packages\Microsoft.VSSDK.BuildTools.17.13.2126\build\Microsoft.VSSDK.BuildTools.targets')" />
+
   <!--
   The following is to provide a timestamp of when the project was built.
   The BuildTimestamp Property contains the timestamp in Universal format
@@ -648,4 +640,5 @@
   <Target Name="BeforeBuild">
     <WriteLinesToFile File="..\VSHistoryShared\BuildTimestamp.cs" Lines="// Created automatically by the BeforeBuild Target in the project file.&#xD;&#xA;internal class BuildTimestamp&#xD;&#xA;{&#xD;&#xA;    public const string CompileTime = &quot;$([System.DateTime]::UtcNow.ToString('u'))&quot;%3B &#xD;&#xA;}" Overwrite="true" />
   </Target>
+
 </Project>

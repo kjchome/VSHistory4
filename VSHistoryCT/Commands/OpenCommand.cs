@@ -1,4 +1,4 @@
-﻿namespace VSHistory;
+﻿namespace VSHistory.Commands;
 
 [Command(PackageIds.VSHistoryOpen)]
 internal sealed class OpenCommand : BaseCommand<OpenCommand>
