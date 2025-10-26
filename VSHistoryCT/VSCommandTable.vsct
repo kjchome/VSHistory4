@@ -48,6 +48,18 @@
                 </Strings>
             </Button>
 
+            <Button guid="VSHistory" id="VSHistoryFilter" priority="0x0005">
+                <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
+                <Icon guid="ImageCatalogGuid" id="FilterPendingChanges" />
+                <CommandFlag>TextChanges</CommandFlag>
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>Filter</ButtonText>
+                    <ToolTipText>Filter the VSHistory files</ToolTipText>
+                </Strings>
+            </Button>
+
             <!-- The following items will be displayed in the Extensions sub-menu. -->
 
             <Button guid="VSHistoryExtensions" id="VSHistoryExtensionsSettingsID" priority="0x0101" type="Button">
@@ -123,6 +135,7 @@
             <IDSymbol name="VSHistoryAllFiles" value="0x0201" />
             <IDSymbol name="VSHistory" value="0x0203" />
             <IDSymbol name="VSHistoryOpen" value="0x0204" />
+            <IDSymbol name="VSHistoryFilter" value="0x0205" />
 
             <IDSymbol name="VSHistoryToolbarGroup" value="0x1101" />
 

@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\AllFilesCommand.cs" />
+    <Compile Include="Commands\FilterCommand.cs" />
     <Compile Include="Commands\OpenCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Events\SettingsWatcher.cs" />
