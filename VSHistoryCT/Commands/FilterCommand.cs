@@ -33,7 +33,7 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
         //
         _CommandText ??= LocalizedString("Filter");
 
-        if (File.Exists(Path.Combine(LongPath(dir.FullName), FilterVersions.FilterJson)))
+        if (File.Exists(Path.Combine(LongPath(dir.FullName), VersionFilters.FilterJson)))
         {
             const string checkmark = "\u2713";
             Command.Text = $"{checkmark} {_CommandText}";
@@ -50,7 +50,7 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
     }
 
     /// <summary>
-    /// The "Filter" command opens the FilterVersions window
+    /// The "Filter" command opens the VersionFilters window
     /// to let the use edit the version filters.
     /// </summary>
     /// <param name="sender"></param>
@@ -74,7 +74,7 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
         //
         // Open the Filter window.
         //
-        FilterVersions filterVersions = new(dir);
+        VersionFilters filterVersions = new(dir);
         filterVersions.FontSize = VsSettings.NormalFontSize;
 
         filterVersions.ShowDialog();

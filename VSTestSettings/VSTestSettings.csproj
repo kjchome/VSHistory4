@@ -459,8 +459,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="..\VSHistoryCT\Commands\FilterVersions.xaml">
-      <Link>FilterVersions.xaml</Link>
+    <Page Include="..\VSHistoryCT\Commands\VersionFilters.xaml">
+      <Link>VersionFilters.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -519,9 +519,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\VSHistoryCT\Commands\FilterVersions.xaml.cs">
-      <Link>FilterVersions.xaml.cs</Link>
-      <DependentUpon>FilterVersions.xaml</DependentUpon>
+    <Compile Include="..\VSHistoryCT\Commands\VersionFilters.xaml.cs">
+      <Link>VersionFilters.xaml.cs</Link>
+      <DependentUpon>VersionFilters.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\VSHistoryCT\Events\SettingsWatcher.cs">
       <Link>Events\SettingsWatcher.cs</Link>

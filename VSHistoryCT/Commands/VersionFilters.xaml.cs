@@ -4,9 +4,9 @@ using System.Windows.Controls;
 namespace VSHistory;
 
 /// <summary>
-/// Interaction logic for FilterVersions.xaml
+/// Interaction logic for VersionFilters.xaml
 /// </summary>
-public partial class FilterVersions : Window
+public partial class VersionFilters : Window
 {
     private DirectoryInfo VersionDir;
 
@@ -18,7 +18,7 @@ public partial class FilterVersions : Window
     /// Initialize the form for filtering a VS History directory.
     /// </summary>
     /// <param name="_directory"></param>
-    public FilterVersions(DirectoryInfo _directory)
+    public VersionFilters(DirectoryInfo _directory)
     {
         InitializeComponent();
 
