@@ -55,6 +55,9 @@
   <ItemGroup>
     <Compile Include="Commands\AllFilesCommand.cs" />
     <Compile Include="Commands\FilterCommand.cs" />
+    <Compile Include="Commands\FilterVersions.xaml.cs">
+      <DependentUpon>FilterVersions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Commands\OpenCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Events\SettingsWatcher.cs" />
@@ -134,6 +137,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ToolWindows\VSHistoryToolWindow.cs" />
+    <Page Include="Commands\FilterVersions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Help\HelpChooseLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

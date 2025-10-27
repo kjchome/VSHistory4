@@ -38,7 +38,17 @@ public partial class App : Application
     /// <param name="e"></param>
     public void Application_Startup(object sender, StartupEventArgs e)
     {
-        TestStartup();
+        //
+        // To test the FilterVersions window.
+        //
+        FilterVersions winFilter = new(new DirectoryInfo(
+            @"C:\Users\kjcho\source\repos\VSHistory4\VSHistoryCT\.vshistory\VSHistoryCTPackage.cs"));
+        winFilter.ShowDialog();
+
+        //
+        // To test the Settings window.
+        //
+        //TestStartup();
     }
 
     private void TestStartup([CallerFilePath] string sourceFilePath = "")

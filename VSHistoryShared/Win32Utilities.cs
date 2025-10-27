@@ -12,6 +12,7 @@ public static class Win32Utilities
         new StringLookup( "All files", "shell32.dll", 34193 ),
         new StringLookup( "Date", "propsys.dll", 38780 ),
         new StringLookup( "Diff", "", 0),   // Can't find this localized
+        new StringLookup( "Filter", "wdc.dll", 36 ),
         new StringLookup( "Long", "propsys.dll", 41056 ),
         new StringLookup( "Open folder", "shell32.dll", 17410 ),
         new StringLookup( "Open", "shell32.dll", 12850 ),

@@ -17,4 +17,17 @@ internal sealed class OpenCommand : BaseCommand<OpenCommand>
             Process.Start(g_VSControl.LatestHistoryFile.VSHistoryDir.FullName);
         }
     }
+
+    private static bool Localized;
+
+    protected override void BeforeQueryStatus(EventArgs e)
+    {
+        if (!Localized)
+        {
+            Localized = true;
+            Command.Text = LocalizedString("Open");
+        }
+
+        base.BeforeQueryStatus(e);
+    }
 }

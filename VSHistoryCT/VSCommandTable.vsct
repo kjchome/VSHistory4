@@ -18,6 +18,7 @@
             <Button guid="VSHistory" id="VSHistoryAllFiles" priority="0x0001">
                 <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
                 <Icon guid="ImageCatalogGuid" id="ShowAllFiles" />
+                <CommandFlag>TextChanges</CommandFlag>
                 <CommandFlag>IconIsMoniker</CommandFlag>
                 <CommandFlag>IconAndText</CommandFlag>
                 <Strings>
@@ -29,6 +30,7 @@
             <Button guid="VSHistory" id="VSHistory" priority="0x0003">
                 <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
                 <Icon guid="ImageCatalogGuid" id="Settings" />
+                <CommandFlag>TextChanges</CommandFlag>
                 <CommandFlag>IconIsMoniker</CommandFlag>
                 <CommandFlag>IconAndText</CommandFlag>
                 <Strings>
@@ -40,6 +42,7 @@
             <Button guid="VSHistory" id="VSHistoryOpen" priority="0x0004">
                 <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
                 <Icon guid="ImageCatalogGuid" id="OpenFolder" />
+                <CommandFlag>TextChanges</CommandFlag>
                 <CommandFlag>IconIsMoniker</CommandFlag>
                 <CommandFlag>IconAndText</CommandFlag>
                 <Strings>

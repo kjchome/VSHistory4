@@ -5,47 +5,78 @@ namespace VSHistory;
 internal sealed class FilterCommand : BaseCommand<FilterCommand>
 {
     /// <summary>
-    /// The "Open" command is used to open the current VS History
-    /// directory in the file explorer.
+    /// The label for the Filter button -- "Filter" (localized).
+    /// </summary>
+    private static string? _CommandText = null;
+
+    /// <summary>
+    /// Set the Filter label appropriately depending on
+    /// whether any filters are defined for this file.
+    /// </summary>
+    /// <param name="e"></param>
+    protected override void BeforeQueryStatus(EventArgs e)
+    {
+        VSHistoryFile? historyFile = g_VSControl?.LatestHistoryFile;
+        if (historyFile == null)
+        {
+            return;
+        }
+
+        DirectoryInfo? dir = historyFile.VSHistoryDir;
+        if (dir == null || !historyFile.HasHistoryFiles)
+        {
+            return;
+        }
+
+        //
+        // If the filter file exists, add a check to the button.
+        //
+        _CommandText ??= LocalizedString("Filter");
+
+        if (File.Exists(Path.Combine(LongPath(dir.FullName), FilterVersions.FilterJson)))
+        {
+            const string checkmark = "\u2713";
+            Command.Text = $"{checkmark} {_CommandText}";
+        }
+        else
+        {
+            Command.Text = $"{_CommandText}";
+        }
+
+        //
+        // This doesn't do anything, but...
+        //
+        base.BeforeQueryStatus(e);
+    }
+
+    /// <summary>
+    /// The "Filter" command opens the FilterVersions window
+    /// to let the use edit the version filters.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     protected override void Execute(object sender, EventArgs e)
     {
-        if (g_VSControl?.LatestHistoryFile?.VSHistoryDir == null ||
-            !g_VSControl.LatestHistoryFile.HasHistoryFiles)
+        ThreadHelper.ThrowIfNotOnUIThread();
+
+        VSHistoryFile? historyFile = g_VSControl?.LatestHistoryFile;
+        if (historyFile == null)
         {
             return;
         }
 
-        
-    }
-
-    private static Dictionary<string, int> dicDir = new();
-
-    protected override void BeforeQueryStatus(EventArgs e)
-    {
-        DirectoryInfo? dir = g_VSControl?.LatestHistoryFile?.VSHistoryDir;
-
-        if (dir == null || !g_VSControl.LatestHistoryFile.HasHistoryFiles)
+        DirectoryInfo? dir = historyFile.VSHistoryDir;
+        if (dir == null || !historyFile.HasHistoryFiles)
         {
             return;
         }
 
-        int iter;
-        string sPath = dir.FullName;
-        if (dicDir.TryGetValue(sPath, out iter))
-        {
-            dicDir[sPath] = ++iter;
-        }
-        else
-        {
-            iter = 1;
-            dicDir.Add(sPath, iter);
-        }
+        //
+        // Open the Filter window.
+        //
+        FilterVersions filterVersions = new(dir);
+        filterVersions.FontSize = VsSettings.NormalFontSize;
 
-        Command.Text = $"Iter {iter}";
-
-        base.BeforeQueryStatus(e);
+        filterVersions.ShowDialog();
     }
 }
