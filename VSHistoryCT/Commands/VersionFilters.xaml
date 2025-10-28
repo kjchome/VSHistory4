@@ -44,23 +44,25 @@
             <RadioButton
                 x:Name="radInclude1"
                 Content="Versions that contain"
-                IsChecked="True"
+                IsChecked="{Binding radInclude1, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radExclude1"
                 Content="Versions that DO NOT contain"
+                IsChecked="{Binding radExclude1, Mode=TwoWay}"
                 Margin="5"
                 />
 
         </StackPanel>
 
         <TextBox
-            x:Name="txt1"
+            x:Name="searchString1"
             Grid.Row="2"
+            Text="{Binding searchString1, Mode=TwoWay}"
             Margin="5"
-            TextChanged="txt1_TextChanged"
+            TextChanged="searchString1_TextChanged"
             />
 
         <Separator Grid.Row="3" Margin="0,5"/>
@@ -70,27 +72,30 @@
             <RadioButton
                 x:Name="radOrInclude"
                 Content="OR Versions that contain"
-                IsChecked="True"
+                IsChecked="{Binding radOrInclude, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radInclude2"
                 Content="AND Versions that contain"
+                IsChecked="{Binding radInclude2, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radExclude2"
                 Content="Versions that DO NOT contain"
+                IsChecked="{Binding radExclude2, Mode=TwoWay}"
                 Margin="5"
                 />
 
         </StackPanel>
 
         <TextBox
-            x:Name="txt2"
+            x:Name="searchString2"
             Grid.Row="5"
+            Text="{Binding searchString2, Mode=TwoWay}"
             Margin="5"
             />
 

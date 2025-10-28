@@ -32,14 +32,13 @@ public partial class App : Application
     /// <summary>
     /// Application startup event handler.
     /// This is set in the App.xaml file.
-    /// Display the VSHistory window for testing.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     public void Application_Startup(object sender, StartupEventArgs e)
     {
         //
-        // To test the FilterVersions window.
+        // To test the VersionFilters window.
         //
         VersionFilters winFilter = new(new DirectoryInfo(
             @"C:\Users\kjcho\source\repos\VSHistory4\VSHistoryCT\.vshistory\VSHistoryCTPackage.cs"));
