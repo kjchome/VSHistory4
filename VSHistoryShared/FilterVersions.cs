@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace VSHistoryShared;
 
@@ -18,15 +17,15 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
 
     /// <summary>
     /// The filename of the file in the VS History directory
-    /// that contains the filter settings in JSON form.
+    /// that contains the filter settings in XML form.
     /// </summary>
-    public static string FilterSettingsFilename => ".Filter.json";
+    public static string FilterSettingsFilename => ".Filter.xml";
 
     /// <summary>
     /// If true, there are some filter settings.
     /// If false, searchString1 is empty, so no settings.
     /// </summary>
-    [JsonIgnore]
+    [XmlIgnore]
     public bool HasFilters => !string.IsNullOrEmpty(searchString1);
 
     /// <summary>
@@ -34,7 +33,7 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// If false, the file doesn't exist.
     /// If null, unknown.
     /// </summary>
-    [JsonIgnore]
+    [XmlIgnore]
     public bool? FileExists { get; } = null;
 
     /// <summary>
@@ -56,6 +55,16 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// If true, searchString2 must be found.
     /// </summary>
     public bool Include2 { get; set; } = false;
+
+    /// <summary>
+    /// If true, first search is case-insensitive.
+    /// </summary>
+    public bool IgnoreCase1 { get; set; } = false;
+
+    /// <summary>
+    /// If true, second search is case-insensitive.
+    /// </summary>
+    public bool IgnoreCase2 { get; set; } = false;
 
     /// <summary>
     /// If true, then the version passes if the
@@ -85,21 +94,24 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <summary>
     /// Load the settings from the specified path, if it exists.
     /// </summary>
-    /// <param name="filterJsonPath"></param>
-    public FilterVersions(string filterJsonPath)
+    /// <param name="filterSettingsPath"></param>
+    public FilterVersions(string filterSettingsPath)
     {
         try
         {
-            FileInfo fileInfo = new FileInfo(filterJsonPath);
+            FileInfo fileInfo = new FileInfo(filterSettingsPath);
             FileExists = fileInfo.Exists;
 
             if (fileInfo.Exists)
             {
+                using FileStream fileStream = fileInfo.OpenRead();
+
                 //
-                // Read the JSON from the file into filterSettings.
+                // Read the settings from the file into filterSettings.
                 //
-                FilterVersions? filterSettings =
-                    JsonSerializer.Deserialize<FilterVersions>(fileInfo.OpenRead());
+                XmlSerializer xml = new(typeof(FilterVersions));
+
+                FilterVersions? filterSettings = (FilterVersions)xml.Deserialize(fileStream);
 
                 if (filterSettings != null)
                 {
@@ -107,7 +119,7 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
                     // Copy all the public properties of filterSettings to this.
                     //
                     PropertyInfo[] properties = typeof(FilterVersions)
-                        .GetProperties(BindingFlags.Instance | BindingFlags.Public );
+                        .GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
                     foreach (PropertyInfo property in properties)
                     {
@@ -124,7 +136,7 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
         }
         catch
         {
-            Debug.Assert(false, "Failed to parse " + filterJsonPath);
+            Debug.Assert(false, "Failed to parse " + filterSettingsPath);
         }
     }
 

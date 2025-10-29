@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Serialization;
 
 namespace VSHistory;
 
@@ -106,12 +106,13 @@ public partial class VersionFilters : Window
             //
             try
             {
-                using (FileStream fsJson = fileInfo.Create())
+                XmlSerializer xml = new(typeof(FilterVersions));
+                using (FileStream fs = fileInfo.Create())
                 {
-                    JsonSerializer.Serialize(fsJson, _FormSettings);
+                    xml.Serialize(fs, _FormSettings);
                 }
             }
-            catch
+            catch (Exception ex) 
             {
                 //
                 // Something went wrong?

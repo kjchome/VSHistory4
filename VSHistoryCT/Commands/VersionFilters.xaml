@@ -55,6 +55,13 @@
                 Margin="5"
                 />
 
+            <CheckBox
+                x:Name="chkIgnoreCase1"
+                Content="Ignore case"
+                IsChecked="{Binding IgnoreCase1, Mode=TwoWay}"
+                Margin="5"
+                />
+
         </StackPanel>
 
         <TextBox
@@ -87,6 +94,13 @@
                 x:Name="radExclude2"
                 Content="Versions that DO NOT contain"
                 IsChecked="{Binding Exclude2, Mode=TwoWay}"
+                Margin="5"
+                />
+
+            <CheckBox
+                x:Name="chkIgnoreCase2"
+                Content="Ignore case"
+                IsChecked="{Binding IgnoreCase2, Mode=TwoWay}"
                 Margin="5"
                 />
 

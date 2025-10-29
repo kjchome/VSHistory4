@@ -226,9 +226,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Text.Json">
-      <Version>9.0.4</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="..\VSHistoryShared\VSHistoryShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

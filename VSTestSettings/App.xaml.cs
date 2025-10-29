@@ -41,7 +41,7 @@ public partial class App : Application
         // To test the VersionFilters window.
         //
         VersionFilters winFilter = new(new DirectoryInfo(
-            @"C:\Users\kjcho\source\repos\VSHistory4\VSHistoryCT\.vshistory\VSHistoryCTPackage.cs"));
+            @"\\?\C:\Users\kjcho\source\repos\FindCopies\tests\.vshistory\AFile.cs"));
         winFilter.ShowDialog();
 
         //
