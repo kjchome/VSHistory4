@@ -33,7 +33,7 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
         //
         _CommandText ??= LocalizedString("Filter");
 
-        if (File.Exists(Path.Combine(LongPath(dir.FullName), VersionFilters.FilterJson)))
+        if (File.Exists(Path.Combine(LongPath(dir.FullName), FilterVersions.FilterSettingsFilename)))
         {
             const string checkmark = "\u2713";
             Command.Text = $"{checkmark} {_CommandText}";

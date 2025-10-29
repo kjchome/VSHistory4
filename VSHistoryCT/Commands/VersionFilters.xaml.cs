@@ -1,71 +1,8 @@
-﻿using System.ComponentModel;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace VSHistory;
-
-/// <summary>
-/// The settings to filter VS History files.
-/// </summary>
-public class FilterSettings : INotifyPropertyChanged
-{
-    public bool radExclude1 { get; set; } = false;
-
-    public bool radExclude2 { get; set; } = false;
-
-    public bool radInclude1 { get; set; } = true;
-
-    public bool radInclude2 { get; set; } = false;
-
-    public bool radOrInclude { get; set; } = true;
-
-    public string searchString1 { get; set; } = "";
-
-    public string searchString2 { get; set; } = "";
-
-    /// <summary>
-    /// Load the settings from the specified path, if it exists.
-    /// </summary>
-    /// <param name="FilterJsonPath"></param>
-    public FilterSettings(string FilterJsonPath)
-    {
-        try
-        {
-            FileInfo fileInfo = new FileInfo(FilterJsonPath);
-
-            if (fileInfo.Exists)
-            {
-                FilterSettings? filterSettings =
-                    JsonSerializer.Deserialize<FilterSettings>(fileInfo.OpenRead());
-
-                if (filterSettings != null)
-                {
-                    radExclude1 = filterSettings.radExclude1;
-                    radExclude2 = filterSettings.radExclude2;
-                    radInclude1 = filterSettings.radInclude1;
-                    radInclude2 = filterSettings.radInclude2;
-                    searchString1 = filterSettings.searchString1;
-                    searchString2 = filterSettings.searchString2;
-                }
-            }
-        }
-        catch
-        {
-        }
-    }
-
-    public FilterSettings()
-    {
-    }
-
-    protected void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-}
 
 /// <summary>
 /// Interaction logic for VersionFilters.xaml
@@ -74,11 +11,24 @@ public partial class VersionFilters : Window
 {
     private DirectoryInfo _VersionDir;
 
-    public static string FilterJson => ".Filter.json";
+    /// <summary>
+    /// The full path to the filter settings file.
+    /// </summary>
+    private string _FilterSettingsPath =>
+        Path.Combine(_VersionDir.FullName, FilterVersions.FilterSettingsFilename);
 
-    private string _FilterJsonPath => Path.Combine(_VersionDir.FullName, FilterJson);
+    /// <summary>
+    /// The FilterVersions that existed (if any) when the window 
+    /// was opened.  This is used to check to see if any changes
+    /// have been made to the filter settings.
+    /// </summary>
+    private FilterVersions _OriginalSettings { get; }
 
-    private FilterSettings _FilterSettings { get; set; }
+    /// <summary>
+    /// The filter settings displayed on the form.
+    /// Any changes to the form will be reflected here.
+    /// </summary>
+    private FilterVersions _FormSettings { get; set; }
 
     /// <summary>
     /// Initialize the form for filtering a VS History directory.
@@ -93,12 +43,18 @@ public partial class VersionFilters : Window
         //
         // If there is a settings file, load it.
         //
-        _FilterSettings = new(_FilterJsonPath);
+        _FormSettings = new(_FilterSettingsPath);
 
         //
-        // Set the DataContext to enable the Bindings.
+        // Save a copy to check for changes at the end.
         //
-        DataContext = _FilterSettings;
+        _OriginalSettings = (FilterVersions)_FormSettings.Clone();
+
+        //
+        // Set the DataContext to enable the Bindings. It's two-way,
+        // so any changes will be reflected in _FormSettings.
+        //
+        DataContext = _FormSettings;
 
         EnableControls();
     }
@@ -110,8 +66,8 @@ public partial class VersionFilters : Window
     /// <param name="e"></param>
     private void btnClear_Click(object sender, RoutedEventArgs e)
     {
-        _FilterSettings.searchString1 = string.Empty;
-        _FilterSettings.searchString2 = string.Empty;
+        _FormSettings.searchString1 = string.Empty;
+        _FormSettings.searchString2 = string.Empty;
 
         searchString2.Text = string.Empty;
         searchString1.Text = string.Empty;
@@ -126,7 +82,21 @@ public partial class VersionFilters : Window
     /// <param name="e"></param>
     private void btnOK_Click(object sender, RoutedEventArgs e)
     {
-        FileInfo fileInfo = new FileInfo(_FilterJsonPath);
+        //
+        // If there were no changes, we're done.
+        //
+        if (_OriginalSettings.Equals(_FormSettings))
+        {
+            Close();
+            return;
+        }
+
+        //
+        // Prepare to save or destroy the filter settings file.
+        //
+        FileInfo fileInfo = new FileInfo(_FilterSettingsPath);
+        Debug.Assert(_FormSettings.searchString1 == searchString1.Text);
+
         string sSearch = searchString1.Text;
 
         if (!string.IsNullOrWhiteSpace(sSearch))
@@ -136,9 +106,9 @@ public partial class VersionFilters : Window
             //
             try
             {
-                using (FileStream fsJson = fileInfo.OpenWrite())
+                using (FileStream fsJson = fileInfo.Create())
                 {
-                    JsonSerializer.Serialize(fsJson, _FilterSettings);
+                    JsonSerializer.Serialize(fsJson, _FormSettings);
                 }
             }
             catch
@@ -166,6 +136,11 @@ public partial class VersionFilters : Window
             {
             }
         }
+
+        //
+        // The filter settings changed in some way -- re-filter the versions.
+        //
+        FilterVersions.Filter(_VersionDir, _FormSettings);
 
         Close();
     }
@@ -202,10 +177,25 @@ public partial class VersionFilters : Window
     /// <param name="e"></param>
     private void searchString1_TextChanged(object sender, TextChangedEventArgs e)
     {
+        //
+        // If the user hits Enter in searchString1, this handler will fire
+        // but it won't change the content of searchString1 in _FormSettings
+        // because the btnGo handler will be invoked immediately.  Therefore,
+        // change searchString1 in _FormSettings here.
+        //
+        Debug.Assert(sender == searchString1);
+
+        _FormSettings.searchString1 = searchString1.Text;
+        e.Handled = true;
+
         EnableControls();
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+        //
+        // Start the user here.
+        //
+        searchString1.Focus();
     }
 }

@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
+using static VSHistoryShared.FilterVersions;
 using static VSHistoryShared.VSHistoryFile;
 
 namespace VSHistoryShared;
@@ -201,14 +202,16 @@ public static class VSHistoryUtilities
     /// a DateTime equivalent of "2016-09-17 12:10:26.725".
     /// </summary>
     /// <param name="sFilenameIn">
-    /// Filename to be parsed.  Expected to be in the standard VS History filename format.
+    /// Filename to be parsed.  Expected to be in the standard VS History filename format,
+    /// although it may have the FilterSuffix indicating it has been filtered out,
+    /// e.g., "2025-03-16_11_09_23_754-".  Remove the suffix.
     /// </param>
     /// <returns>
     /// DateTime extracted from the filename, or DateTime.MinValue if not successful.
     /// </returns>
     public static DateTime DateTimeFromFilename(string sFilenameIn)
     {
-        string sFilename = Path.GetFileNameWithoutExtension(sFilenameIn);
+        string sFilename = Path.GetFileNameWithoutExtension(sFilenameIn).TrimEnd(FilterSuffix);
         DateTime dtLastWrite = DateTime.MinValue;
 
         if (sFilename.Length >= VSHistoryTimestampFormat.Length &&

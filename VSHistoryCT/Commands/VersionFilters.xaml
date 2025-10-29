@@ -106,7 +106,6 @@
             <Button
                 x:Name="btnClear"
                 Content="_Clear"
-                IsDefault="True"
                 Click="btnClear_Click"
                 />
 
