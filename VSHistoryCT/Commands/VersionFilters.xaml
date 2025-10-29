@@ -44,25 +44,25 @@
             <RadioButton
                 x:Name="radInclude1"
                 Content="Versions that contain"
-                IsChecked="{Binding radInclude1, Mode=TwoWay}"
+                IsChecked="{Binding Include1, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radExclude1"
                 Content="Versions that DO NOT contain"
-                IsChecked="{Binding radExclude1, Mode=TwoWay}"
+                IsChecked="{Binding Exclude1, Mode=TwoWay}"
                 Margin="5"
                 />
 
         </StackPanel>
 
         <TextBox
-            x:Name="searchString1"
+            x:Name="txtString1"
             Grid.Row="2"
             Text="{Binding searchString1, Mode=TwoWay}"
             Margin="5"
-            TextChanged="searchString1_TextChanged"
+            TextChanged="txtString1_TextChanged"
             />
 
         <Separator Grid.Row="3" Margin="0,5"/>
@@ -72,28 +72,28 @@
             <RadioButton
                 x:Name="radOrInclude"
                 Content="OR Versions that contain"
-                IsChecked="{Binding radOrInclude, Mode=TwoWay}"
+                IsChecked="{Binding OrInclude, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radInclude2"
                 Content="AND Versions that contain"
-                IsChecked="{Binding radInclude2, Mode=TwoWay}"
+                IsChecked="{Binding Include2, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radExclude2"
                 Content="Versions that DO NOT contain"
-                IsChecked="{Binding radExclude2, Mode=TwoWay}"
+                IsChecked="{Binding Exclude2, Mode=TwoWay}"
                 Margin="5"
                 />
 
         </StackPanel>
 
         <TextBox
-            x:Name="searchString2"
+            x:Name="txtString2"
             Grid.Row="5"
             Text="{Binding searchString2, Mode=TwoWay}"
             Margin="5"

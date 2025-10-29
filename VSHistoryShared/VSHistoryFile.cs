@@ -19,8 +19,8 @@ public class VSHistoryFile
 
     /// <summary>
     /// Mask to use when searching for VS History files.
-    /// The filename may end with "T" to indicate that it has
-    /// a VS history tag, e.g., "2019-03-16_11_09_23_754T.cs"
+    /// The filename may end with "-" to indicate that it has
+    /// been filtered out from display.
     /// </summary>
     public static string VSHistoryFilenameMask => "????-??-??_??_??_??_????.*";
 

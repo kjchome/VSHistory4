@@ -69,8 +69,8 @@ public partial class VersionFilters : Window
         _FormSettings.searchString1 = string.Empty;
         _FormSettings.searchString2 = string.Empty;
 
-        searchString2.Text = string.Empty;
-        searchString1.Text = string.Empty;
+        txtString2.Text = string.Empty;
+        txtString1.Text = string.Empty;
     }
 
     /// <summary>
@@ -95,9 +95,9 @@ public partial class VersionFilters : Window
         // Prepare to save or destroy the filter settings file.
         //
         FileInfo fileInfo = new FileInfo(_FilterSettingsPath);
-        Debug.Assert(_FormSettings.searchString1 == searchString1.Text);
+        Debug.Assert(_FormSettings.searchString1 == txtString1.Text);
 
-        string sSearch = searchString1.Text;
+        string sSearch = txtString1.Text;
 
         if (!string.IsNullOrWhiteSpace(sSearch))
         {
@@ -157,15 +157,15 @@ public partial class VersionFilters : Window
     /// </remarks>
     private void EnableControls()
     {
-        if (string.IsNullOrWhiteSpace(searchString1.Text))
+        if (string.IsNullOrWhiteSpace(txtString1.Text))
         {
             stackPart2.IsEnabled = false;
-            searchString2.IsEnabled = false;
+            txtString2.IsEnabled = false;
         }
         else
         {
             stackPart2.IsEnabled = true;
-            searchString2.IsEnabled = true;
+            txtString2.IsEnabled = true;
         }
     }
 
@@ -175,7 +175,7 @@ public partial class VersionFilters : Window
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void searchString1_TextChanged(object sender, TextChangedEventArgs e)
+    private void txtString1_TextChanged(object sender, TextChangedEventArgs e)
     {
         //
         // If the user hits Enter in searchString1, this handler will fire
@@ -183,9 +183,9 @@ public partial class VersionFilters : Window
         // because the btnGo handler will be invoked immediately.  Therefore,
         // change searchString1 in _FormSettings here.
         //
-        Debug.Assert(sender == searchString1);
+        Debug.Assert(sender == txtString1);
 
-        _FormSettings.searchString1 = searchString1.Text;
+        _FormSettings.searchString1 = txtString1.Text;
         e.Handled = true;
 
         EnableControls();
@@ -196,6 +196,6 @@ public partial class VersionFilters : Window
         //
         // Start the user here.
         //
-        searchString1.Focus();
+        txtString1.Focus();
     }
 }

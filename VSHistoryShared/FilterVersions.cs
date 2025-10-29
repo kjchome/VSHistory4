@@ -40,28 +40,28 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <summary>
     /// If true, searchString1 must not be found.
     /// </summary>
-    public bool radExclude1 { get; set; } = false;
+    public bool Exclude1 { get; set; } = false;
 
     /// <summary>
     /// If true, searchString2 must not be found.
     /// </summary>
-    public bool radExclude2 { get; set; } = false;
+    public bool Exclude2 { get; set; } = false;
 
     /// <summary>
     /// If true, searchString1 must be found.
     /// </summary>
-    public bool radInclude1 { get; set; } = true;
+    public bool Include1 { get; set; } = true;
 
     /// <summary>
     /// If true, searchString2 must be found.
     /// </summary>
-    public bool radInclude2 { get; set; } = false;
+    public bool Include2 { get; set; } = false;
 
     /// <summary>
     /// If true, then the version passes if the
     /// second search string is found.
     /// </summary>
-    public bool radOrInclude { get; set; } = true;
+    public bool OrInclude { get; set; } = true;
 
     /// <summary>
     /// The first search string.  If empty, then
@@ -184,13 +184,50 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <param name="settings"></param>
     public static void Filter(DirectoryInfo versionDir, FilterVersions? settings = null)
     {
+        string sSettingsPath = Path.Combine(versionDir.FullName, FilterSettingsFilename);
+        FileInfo fiSettings = new(sSettingsPath);
+
         if (settings == null)
         {
             //
             // Read the settings from the settings file, if any.
             //
-            string sSettingsPath = Path.Combine(versionDir.FullName, FilterVersions.FilterSettingsFilename);
-            settings = new(sSettingsPath);
+            settings = fiSettings.Exists ? new(sSettingsPath) : new();
+        }
+
+        //
+        // If filters are empty, clear all filter suffixes.
+        //
+        if(!settings.HasFilters)
+        {
+            //
+            // Delete the file if it exists.
+            //
+            fiSettings.Delete();
+
+            //
+            // Find any version files with the filter suffix and rename them, e.g.,
+            // rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
+            //
+            foreach (FileInfo fileInfo in versionDir.EnumerateFiles($"*{FilterSuffix}.*"))
+            {
+                //
+                // Make sure it's a valid filename.
+                //
+                if (DateTimeFromFilename(fileInfo.Name) == DateTime.MinValue)
+                {
+                    continue; // ???
+                }
+
+                //
+                // Rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
+                //
+                string sNewName = Path.GetFileNameWithoutExtension(fileInfo.Name).TrimEnd(FilterSuffix);
+                string sNewPath = Path.Combine(versionDir.FullName,
+                    sNewName + Path.GetExtension(fileInfo.Name));
+
+                File.Move(fileInfo.FullName, sNewPath);
+            }
         }
     }
 
