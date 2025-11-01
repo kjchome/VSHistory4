@@ -103,10 +103,8 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
             {
                 //
                 // Exclude any files that have been filtered out.
-                // They will have the filter suffix ("-") on the filename.
                 //
-                string sNameOnly = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                if (!sNameOnly.EndsWith(FilterVersions.FilterSuffixStr))
+                if (!vsHistoryFile.FilteredFilenames.Contains(fileInfo.Name))
                 {
                     VSHistoryRow newRow = new VSHistoryRow(fileInfo, vsHistoryFile.VSFileInfo);
                     g_VSControl.VSHistoryRows.Add(newRow);

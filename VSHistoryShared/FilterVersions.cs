@@ -1,10 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
-using System.Xml.Linq;
 using System.Xml.Serialization;
-
-using MessagePack;
 
 namespace VSHistoryShared;
 
@@ -13,14 +9,6 @@ namespace VSHistoryShared;
 /// </summary>
 public class FilterVersions : INotifyPropertyChanged, ICloneable
 {
-    /// <summary>
-    /// Suffix applied to VS History versions to indicate that
-    /// they are filtered out, e.g., "2025-03-16_11_09_23_754-.cs".
-    /// </summary>
-    public static char FilterSuffix => '-';
-
-    public static string FilterSuffixStr => "-";
-
     /// <summary>
     /// The filename of the file in the VS History directory
     /// that contains the filter settings in XML form.
@@ -39,6 +27,11 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// </summary>
     [XmlIgnore]
     public bool HasPart2 => !string.IsNullOrEmpty(searchString2);
+
+    /// <summary>
+    /// List of filenames that are filtered out.
+    /// </summary>
+    public List<string> FilteredFiles { get; set; } = new();
 
     /// <summary>
     /// If true, the file exists.
@@ -219,7 +212,7 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
         }
 
         //
-        // If filters are empty, just clear all filter suffixes and we're done.
+        // If filters are empty, just delete the filter file and we're done.
         //
         if (!settings.HasFilters)
         {
@@ -227,8 +220,6 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
             // Delete the file if it exists.
             //
             fiSettings.Delete();
-
-            ClearFilters(versionDir);
             return;
         }
 
@@ -353,38 +344,18 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
                 }
             }
 
-            string sNameOnly = Path.GetFileNameWithoutExtension(sPath);
+            //
+            // Either add or remove the filename from the
+            // list of filtered files.
+            //
+            string sNameOnly = Path.GetFileName(sPath);
             if (bIncludeFile)
             {
-                //
-                // Include the file.  Remove the filter suffix if present.
-                //
-                if (sNameOnly.EndsWith(FilterSuffixStr))
-                {
-                    //
-                    // Rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
-                    //
-                    string sNewName = sNameOnly.TrimEnd(FilterSuffix);
-                    string sNewPath = Path.Combine(versionDir.FullName, sNewName + Path.GetExtension(sPath));
-
-                    File.Move(sPath, sNewPath);
-                }
+                settings.FilteredFiles.Remove(sNameOnly);
             }
             else
             {
-                //
-                // Do not include the file.  Add the filter suffix.
-                //
-                if (!sNameOnly.EndsWith(FilterSuffixStr))
-                {
-                    //
-                    // Rename "2025-03-16_11_09_23_754.cs" to "2025-03-16_11_09_23_754-.cs".
-                    //
-                    string sNewPath = Path.Combine(versionDir.FullName,
-                        sNameOnly + FilterSuffixStr + Path.GetExtension(sPath));
-
-                    File.Move(sPath, sNewPath);
-                }
+                settings.FilteredFiles.Add(sNameOnly);
             }
 
             VSLogMsg($"Read {sContents.Length:N0} chars from {Path.GetFileName(sPath)}, " +
@@ -413,39 +384,6 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
             {
                 Debug.Assert(false, "Failed to write the settings file!");
             }
-        }
-    }
-    /// <summary>
-    /// Remove the filter suffix from all version files
-    /// indicating no filtering.
-    /// </summary>
-    /// <param name="versionDir"></param>
-    private static void ClearFilters(DirectoryInfo versionDir)
-    {
-        //
-        // Find any version files with the filter suffix and rename them, e.g.,
-        // rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
-        //
-        // Look for files with the suffix, "*-.*"
-        //
-        foreach (FileInfo fileInfo in versionDir.EnumerateFiles("*" + FilterSuffixStr + ".*"))
-        {
-            //
-            // Make sure it's a valid filename.
-            //
-            if (DateTimeFromFilename(fileInfo.Name) == DateTime.MinValue)
-            {
-                continue; // ???
-            }
-
-            //
-            // Rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
-            //
-            string sNewName = Path.GetFileNameWithoutExtension(fileInfo.Name).TrimEnd(FilterSuffix);
-            string sNewPath = Path.Combine(versionDir.FullName,
-                sNewName + Path.GetExtension(fileInfo.Name));
-
-            File.Move(fileInfo.FullName, sNewPath);
         }
     }
 

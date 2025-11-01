@@ -40,11 +40,12 @@ public partial class App : Application
         //
         // To test the VersionFilters window.
         //
-        VersionFilters winFilter = new(new DirectoryInfo(
-            @"C:\Users\kjcho\source\repos\VSHistory4\VSTestSettings\.vshistory\App.xaml.cs"));
-            //@"\\?\C:\Users\kjcho\source\repos\WeatherV2\.vshistory\mainwindow.xaml.cs"));
+        string sPath = @"C:\Users\kjcho\source\repos\VSHistory4\VSTestSettings\App.xaml.cs";
+        //@"\\?\C:\Users\kjcho\source\repos\WeatherV2\.vshistory\mainwindow.xaml.cs"));
         //@"\\?\C:\Users\kjcho\source\repos\KJCWeatherWFP\.vshistory\WaterTemp.xaml.cs"));
         //@"\\?\C:\Users\kjcho\source\repos\FileKeeper11d\FKControl\.vshistory\FKControl.xaml.cs"));
+
+        VersionFilters winFilter = new(new VSHistoryFile(sPath));
         winFilter.ShowDialog();
 
         //

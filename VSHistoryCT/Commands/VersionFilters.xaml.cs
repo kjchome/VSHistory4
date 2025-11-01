@@ -34,11 +34,20 @@ public partial class VersionFilters : Window
     /// Initialize the form for filtering a VS History directory.
     /// </summary>
     /// <param name="_directory"></param>
-    public VersionFilters(DirectoryInfo _directory)
+    public VersionFilters(VSHistoryFile historyFile)
     {
         InitializeComponent();
 
-        _VersionDir = _directory;
+        //
+        // The directory that contains the version files, e.g.,
+        // "C:\Users\user\ConsoleApp1\.vshistory\Program.cs".
+        //
+        _VersionDir = historyFile.VSHistoryDir;
+
+        //
+        // Display the path but remove the "\\?\" prefix.
+        //
+        txtFilename.Text = historyFile.FullPath.TrimStart(['\\', '?']);
 
         //
         // If there is a settings file, load it.

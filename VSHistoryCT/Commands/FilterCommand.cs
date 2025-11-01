@@ -74,12 +74,12 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
         //
         // Open the Filter window.
         //
-        VersionFilters filterVersions = new(dir);
+        VersionFilters filterVersions = new(historyFile);
         filterVersions.FontSize = VsSettings.NormalFontSize;
 
-        bool? bResult = filterVersions.ShowDialog();
+        bool? bOK = filterVersions.ShowDialog();
 
-        if (bResult == true)
+        if (bOK == true)
         {
             //
             // The filter was changed.  Refresh the tool window.

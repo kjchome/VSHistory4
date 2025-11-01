@@ -29,8 +29,6 @@ public class VSHistoryFile
     /// </summary>
     public static string VSHistoryTimestampFormat => "yyyy-MM-dd_HH_mm_ss_fff";
 
-    private int? _NumFiltered;
-
     private long? _ClusterSize;
 
     /// <summary>
@@ -50,22 +48,8 @@ public class VSHistoryFile
 
     /// <summary>
     /// The number of VSHistory files that are filtered out.
-    /// These files have the filter suffix ("-") in the filename.
     /// </summary>
-    public int NumFiltered
-    {
-        get
-        {
-            if (_NumFiltered == null)
-            {
-                _NumFiltered = VSHistoryFiles
-                    .Where(n => Path.GetFileNameWithoutExtension(n.Name)
-                        .EndsWith(FilterVersions.FilterSuffixStr)).Count();
-            }
-
-            return (int)_NumFiltered;
-        }
-    }
+    public int NumFiltered => FilteredFilenames?.Count ?? 0;
 
     /// <summary>
     /// FileInfo of the file in the VS project.
@@ -149,6 +133,11 @@ public class VSHistoryFile
         }
     }
 
+    /// <summary>
+    /// The list of filenames that are filtered out, if any.
+    /// </summary>
+    public List<string> FilteredFilenames = new();
+
     private List<FileInfo>? _VSHistoryFiles;
 
     /// <summary>
@@ -161,6 +150,8 @@ public class VSHistoryFile
             if (_VSHistoryFiles == null)
             {
                 _VSHistoryFiles = new List<FileInfo>();
+                FilteredFilenames = new List<string>();
+
                 if (VSHistoryDir.Exists)
                 {
                     //
@@ -168,12 +159,20 @@ public class VSHistoryFile
                     //
                     _VSHistoryFiles = [.. VSHistoryDir.GetFiles(VSHistoryFilenameMask)];
                     _VSHistoryFiles.Reverse();
-                }
 
-                //
-                // Force the number of filtered files to be re-computed.
-                //
-                _NumFiltered = null;
+                    //
+                    // Get the filter settings, if any, and get the
+                    // list of filtered filenames.
+                    //
+                    string sFilterPath =
+                        Path.Combine(VSHistoryDir.FullName, FilterVersions.FilterSettingsName);
+
+                    if (File.Exists(sFilterPath))
+                    {
+                        FilterVersions filterVersions = new(sFilterPath);
+                        FilteredFilenames.AddRange(filterVersions.FilteredFiles);
+                    }
+                }
             }
 
             return _VSHistoryFiles;
@@ -511,11 +510,6 @@ public class VSHistoryFile
         // Purge history files in case we've exceeded some limit.
         //
         PurgeHistoryFile(this);
-
-        //
-        // Force the number of filtered files to be re-computed.
-        //
-        _NumFiltered = null;
     }
 
     /// <summary>
