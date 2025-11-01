@@ -1,6 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Reflection;
+using System.Xml.Linq;
 using System.Xml.Serialization;
+
+using MessagePack;
 
 namespace VSHistoryShared;
 
@@ -15,11 +19,13 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// </summary>
     public static char FilterSuffix => '-';
 
+    public static string FilterSuffixStr => "-";
+
     /// <summary>
     /// The filename of the file in the VS History directory
     /// that contains the filter settings in XML form.
     /// </summary>
-    public static string FilterSettingsFilename => ".Filter.xml";
+    public static string FilterSettingsName => ".Filter.xml";
 
     /// <summary>
     /// If true, there are some filter settings.
@@ -27,6 +33,12 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// </summary>
     [XmlIgnore]
     public bool HasFilters => !string.IsNullOrEmpty(searchString1);
+
+    /// <summary>
+    /// If true, there are some filter settings for the second string.
+    /// </summary>
+    [XmlIgnore]
+    public bool HasPart2 => !string.IsNullOrEmpty(searchString2);
 
     /// <summary>
     /// If true, the file exists.
@@ -39,12 +51,12 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <summary>
     /// If true, searchString1 must not be found.
     /// </summary>
-    public bool Exclude1 { get; set; } = false;
+    public bool Exclude1 { get; set; }
 
     /// <summary>
     /// If true, searchString2 must not be found.
     /// </summary>
-    public bool Exclude2 { get; set; } = false;
+    public bool Exclude2 { get; set; }
 
     /// <summary>
     /// If true, searchString1 must be found.
@@ -54,17 +66,17 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <summary>
     /// If true, searchString2 must be found.
     /// </summary>
-    public bool Include2 { get; set; } = false;
+    public bool Include2 { get; set; }
 
     /// <summary>
     /// If true, first search is case-insensitive.
     /// </summary>
-    public bool IgnoreCase1 { get; set; } = false;
+    public bool IgnoreCase1 { get; set; }
 
     /// <summary>
     /// If true, second search is case-insensitive.
     /// </summary>
-    public bool IgnoreCase2 { get; set; } = false;
+    public bool IgnoreCase2 { get; set; }
 
     /// <summary>
     /// If true, then the version passes if the
@@ -86,10 +98,9 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
 
     /// <summary>
     /// The filename of the highest version since the
-    /// filters were applied, e.g., "2025-03-16_11_09_23_754",
-    /// with no suffixes or file type.
+    /// filters were applied, e.g., "2025-03-16_11_09_23_754.cs".
     /// </summary>
-    public string highestVersion { get; set; } = "";
+    public DateTime highestVersion { get; set; } = DateTime.MinValue;
 
     /// <summary>
     /// Load the settings from the specified path, if it exists.
@@ -196,7 +207,7 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <param name="settings"></param>
     public static void Filter(DirectoryInfo versionDir, FilterVersions? settings = null)
     {
-        string sSettingsPath = Path.Combine(versionDir.FullName, FilterSettingsFilename);
+        string sSettingsPath = Path.Combine(versionDir.FullName, FilterSettingsName);
         FileInfo fiSettings = new(sSettingsPath);
 
         if (settings == null)
@@ -208,38 +219,233 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
         }
 
         //
-        // If filters are empty, clear all filter suffixes.
+        // If filters are empty, just clear all filter suffixes and we're done.
         //
-        if(!settings.HasFilters)
+        if (!settings.HasFilters)
         {
             //
             // Delete the file if it exists.
             //
             fiSettings.Delete();
 
+            ClearFilters(versionDir);
+            return;
+        }
+
+        //
+        // Use the highest version timestamp to check
+        // whether any files have already been checked.
+        // If this is new settings, it will be DateTime.MinValue.
+        //
+        DateTime dtHighest = settings.highestVersion;
+
+        Stopwatch sw = Stopwatch.StartNew();
+        long bytesRead = 0;
+        int iNumFiles = 0;
+
+        //
+        // Set the string comparer to ignore case or not.
+        //
+        StringComparison comparison1 = settings.IgnoreCase1 ?
+             StringComparison.CurrentCultureIgnoreCase :
+             StringComparison.CurrentCulture;
+
+        StringComparison comparison2 = settings.IgnoreCase2 ?
+             StringComparison.CurrentCultureIgnoreCase :
+             StringComparison.CurrentCulture;
+
+        //
+        // Get all the filenames in the directory in ascending order.
+        // (The OrderBy is probably redundant, but...)
+        //
+        foreach (string sPath in Directory
+            .EnumerateFiles(versionDir.FullName, VSHistoryFile.VSHistoryFilenameMask)
+            .OrderBy(s => s)
+            )
+        {
             //
-            // Find any version files with the filter suffix and rename them, e.g.,
-            // rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
+            // Make sure it's a valid filename and see
+            // if it has already been checked.
             //
-            foreach (FileInfo fileInfo in versionDir.EnumerateFiles($"*{FilterSuffix}.*"))
+            DateTime dtFile = DateTimeFromFilename(sPath);
+            if (dtFile <= dtHighest)
+            {
+                continue;
+            }
+
+            //
+            // Extensive testing indicates that it's almost always
+            // faster to read the whole file rather than File.ReadLines().
+            //
+            // There are exceptions to this, of course, like a very large
+            // file where the "Include" string is early in the file.
+            // But accommodating these exceptions lead to a lot of 
+            // complexity, so ... meh.
+            //
+            string sContents = File.ReadAllText(sPath);
+            bytesRead += sContents.Length;
+
+            iNumFiles++;
+
+            //
+            // We have a new "Highest" timestamp.
+            //
+            dtHighest = dtFile;
+
+            //
+            // We have to check each line of this file.
+            //
+            // Part1 options: Include1, Exclude1
+            // Part2 options: ORInclude, Include2, Exclude2
+            //
+            // 1. If string1 is found, include if Include1 is set.
+            // 2. If string1 is not found, include if Exclude1 is set.
+            // 3. If there is any part 2:
+            //    a. If not included and ORInclude is set, include if string2 is found
+            //    A. If included and Include2 is set, do not include unless string2 is found
+            //    B. If included and Exclude2 is set, do not include
+            //
+
+            //
+            // The file is not included unless it matches the tests.
+            //
+            bool bIncludeFile = false;
+
+            bool bFound1 = sContents.IndexOf(settings.searchString1, comparison1) >= 0;
+            bool bFound2 = false;
+
+            if ((bFound1 && settings.Include1) || (!bFound1 && settings.Exclude1))
             {
                 //
-                // Make sure it's a valid filename.
+                // Part1 passed.  Check part2.
                 //
-                if (DateTimeFromFilename(fileInfo.Name) == DateTime.MinValue)
-                {
-                    continue; // ???
-                }
-
-                //
-                // Rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
-                //
-                string sNewName = Path.GetFileNameWithoutExtension(fileInfo.Name).TrimEnd(FilterSuffix);
-                string sNewPath = Path.Combine(versionDir.FullName,
-                    sNewName + Path.GetExtension(fileInfo.Name));
-
-                File.Move(fileInfo.FullName, sNewPath);
+                bIncludeFile = true;
             }
+
+            if (settings.HasPart2)
+            {
+                //
+                // Check ORInclude if we haven't passed yet.
+                //
+                if (!bIncludeFile && settings.OrInclude)
+                {
+                    bFound2 = sContents.IndexOf(settings.searchString2, comparison2) >= 0;
+
+                    if (bFound2)
+                    {
+                        bIncludeFile = true;
+                    }
+                }
+                else if (bIncludeFile)
+                {
+                    //
+                    // The file is included from part 1.  Check other criteria.
+                    //
+                    bFound2 = sContents.IndexOf(settings.searchString2, comparison2) >= 0;
+
+                    if ((!bFound2 && settings.Include2) || (bFound2 && settings.Exclude2))
+                    {
+                        //
+                        // Part 2 failed.
+                        //
+                        bIncludeFile = false;
+                    }
+                }
+            }
+
+            string sNameOnly = Path.GetFileNameWithoutExtension(sPath);
+            if (bIncludeFile)
+            {
+                //
+                // Include the file.  Remove the filter suffix if present.
+                //
+                if (sNameOnly.EndsWith(FilterSuffixStr))
+                {
+                    //
+                    // Rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
+                    //
+                    string sNewName = sNameOnly.TrimEnd(FilterSuffix);
+                    string sNewPath = Path.Combine(versionDir.FullName, sNewName + Path.GetExtension(sPath));
+
+                    File.Move(sPath, sNewPath);
+                }
+            }
+            else
+            {
+                //
+                // Do not include the file.  Add the filter suffix.
+                //
+                if (!sNameOnly.EndsWith(FilterSuffixStr))
+                {
+                    //
+                    // Rename "2025-03-16_11_09_23_754.cs" to "2025-03-16_11_09_23_754-.cs".
+                    //
+                    string sNewPath = Path.Combine(versionDir.FullName,
+                        sNameOnly + FilterSuffixStr + Path.GetExtension(sPath));
+
+                    File.Move(sPath, sNewPath);
+                }
+            }
+
+            VSLogMsg($"Read {sContents.Length:N0} chars from {Path.GetFileName(sPath)}, " +
+                $"Include: {bIncludeFile}, Found1: {bFound1}, Found2: {bFound2}", Severity.Info);
+        }
+
+        VSLogMsg($"Read {bytesRead:N0} chars from {iNumFiles:N0} files in {sw.Elapsed}",
+            Severity.Info);
+
+        if (dtHighest != settings.highestVersion)
+        {
+            //
+            // Update the settings file with the new "Highest" timestamp.
+            //
+            try
+            {
+                settings.highestVersion = dtHighest;
+
+                XmlSerializer xml = new(typeof(FilterVersions));
+                using (FileStream fs = fiSettings.Create())
+                {
+                    xml.Serialize(fs, settings);
+                }
+            }
+            catch
+            {
+                Debug.Assert(false, "Failed to write the settings file!");
+            }
+        }
+    }
+    /// <summary>
+    /// Remove the filter suffix from all version files
+    /// indicating no filtering.
+    /// </summary>
+    /// <param name="versionDir"></param>
+    private static void ClearFilters(DirectoryInfo versionDir)
+    {
+        //
+        // Find any version files with the filter suffix and rename them, e.g.,
+        // rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
+        //
+        // Look for files with the suffix, "*-.*"
+        //
+        foreach (FileInfo fileInfo in versionDir.EnumerateFiles("*" + FilterSuffixStr + ".*"))
+        {
+            //
+            // Make sure it's a valid filename.
+            //
+            if (DateTimeFromFilename(fileInfo.Name) == DateTime.MinValue)
+            {
+                continue; // ???
+            }
+
+            //
+            // Rename "2025-03-16_11_09_23_754-.cs" to "2025-03-16_11_09_23_754.cs".
+            //
+            string sNewName = Path.GetFileNameWithoutExtension(fileInfo.Name).TrimEnd(FilterSuffix);
+            string sNewPath = Path.Combine(versionDir.FullName,
+                sNewName + Path.GetExtension(fileInfo.Name));
+
+            File.Move(fileInfo.FullName, sNewPath);
         }
     }
 

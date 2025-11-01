@@ -43,14 +43,14 @@
 
             <RadioButton
                 x:Name="radInclude1"
-                Content="Versions that contain"
+                Content="Files that contain"
                 IsChecked="{Binding Include1, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radExclude1"
-                Content="Versions that DO NOT contain"
+                Content="Files that DO NOT contain"
                 IsChecked="{Binding Exclude1, Mode=TwoWay}"
                 Margin="5"
                 />
@@ -78,21 +78,21 @@
 
             <RadioButton
                 x:Name="radOrInclude"
-                Content="OR Versions that contain"
+                Content="OR Files that contain"
                 IsChecked="{Binding OrInclude, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radInclude2"
-                Content="AND Versions that contain"
+                Content="AND Files that ALSO contain"
                 IsChecked="{Binding Include2, Mode=TwoWay}"
                 Margin="5"
                 />
 
             <RadioButton
                 x:Name="radExclude2"
-                Content="Versions that DO NOT contain"
+                Content="AND Files that DO NOT contain"
                 IsChecked="{Binding Exclude2, Mode=TwoWay}"
                 Margin="5"
                 />

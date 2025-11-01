@@ -202,16 +202,14 @@ public static class VSHistoryUtilities
     /// a DateTime equivalent of "2016-09-17 12:10:26.725".
     /// </summary>
     /// <param name="sFilenameIn">
-    /// Filename to be parsed.  Expected to be in the standard VS History filename format,
-    /// although it may have the FilterSuffix indicating it has been filtered out,
-    /// e.g., "2025-03-16_11_09_23_754-".  Remove the suffix.
+    /// Filename to be parsed.  Expected to be in the standard VS History filename format.
     /// </param>
     /// <returns>
     /// DateTime extracted from the filename, or DateTime.MinValue if not successful.
     /// </returns>
     public static DateTime DateTimeFromFilename(string sFilenameIn)
     {
-        string sFilename = Path.GetFileNameWithoutExtension(sFilenameIn).TrimEnd(FilterSuffix);
+        string sFilename = Path.GetFileNameWithoutExtension(sFilenameIn);
         DateTime dtLastWrite = DateTime.MinValue;
 
         if (sFilename.Length >= VSHistoryTimestampFormat.Length &&

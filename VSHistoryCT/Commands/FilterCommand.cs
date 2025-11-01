@@ -33,7 +33,7 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
         //
         _CommandText ??= LocalizedString("Filter");
 
-        if (File.Exists(Path.Combine(LongPath(dir.FullName), FilterVersions.FilterSettingsFilename)))
+        if (File.Exists(Path.Combine(LongPath(dir.FullName), FilterVersions.FilterSettingsName)))
         {
             const string checkmark = "\u2713";
             Command.Text = $"{checkmark} {_CommandText}";
@@ -77,6 +77,14 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
         VersionFilters filterVersions = new(dir);
         filterVersions.FontSize = VsSettings.NormalFontSize;
 
-        filterVersions.ShowDialog();
+        bool? bResult = filterVersions.ShowDialog();
+
+        if (bResult == true)
+        {
+            //
+            // The filter was changed.  Refresh the tool window.
+            //
+            RefreshVSHistoryWindow(bForce: true);
+        }
     }
 }

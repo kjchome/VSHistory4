@@ -15,7 +15,7 @@ public partial class VersionFilters : Window
     /// The full path to the filter settings file.
     /// </summary>
     private string _FilterSettingsPath =>
-        Path.Combine(_VersionDir.FullName, FilterVersions.FilterSettingsFilename);
+        Path.Combine(_VersionDir.FullName, FilterVersions.FilterSettingsName);
 
     /// <summary>
     /// The FilterVersions that existed (if any) when the window 
@@ -60,17 +60,16 @@ public partial class VersionFilters : Window
     }
 
     /// <summary>
-    /// Clear the search strings, which will trigger the TextChanged event.
+    /// Reset the settings.  The form will be re-drawn.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void btnClear_Click(object sender, RoutedEventArgs e)
     {
-        _FormSettings.searchString1 = string.Empty;
-        _FormSettings.searchString2 = string.Empty;
+        _FormSettings = new();
 
-        txtString2.Text = string.Empty;
-        txtString1.Text = string.Empty;
+        DataContext = null;
+        DataContext = _FormSettings;
     }
 
     /// <summary>
@@ -106,13 +105,18 @@ public partial class VersionFilters : Window
             //
             try
             {
+                //
+                // This is a new settings file, so zap the highestVersion.
+                //
+                _FormSettings.highestVersion = DateTime.MinValue;
+
                 XmlSerializer xml = new(typeof(FilterVersions));
                 using (FileStream fs = fileInfo.Create())
                 {
                     xml.Serialize(fs, _FormSettings);
                 }
             }
-            catch (Exception ex) 
+            catch
             {
                 //
                 // Something went wrong?
@@ -142,6 +146,12 @@ public partial class VersionFilters : Window
         // The filter settings changed in some way -- re-filter the versions.
         //
         FilterVersions.Filter(_VersionDir, _FormSettings);
+
+        //
+        // Return true to indicate that something was changed
+        // and the tool window needs to be refreshed.
+        //
+        DialogResult = true;
 
         Close();
     }
@@ -179,14 +189,20 @@ public partial class VersionFilters : Window
     private void txtString1_TextChanged(object sender, TextChangedEventArgs e)
     {
         //
-        // If the user hits Enter in searchString1, this handler will fire
-        // but it won't change the content of searchString1 in _FormSettings
-        // because the btnGo handler will be invoked immediately.  Therefore,
-        // change searchString1 in _FormSettings here.
+        // If the user hits Enter in a search string, this handler will fire
+        // but it won't change the content of the string in _FormSettings
+        // because the btnOK handler will be invoked immediately.  Therefore,
+        // set the string in _FormSettings here.
         //
-        Debug.Assert(sender == txtString1);
+        if (sender == txtString1)
+        {
+            _FormSettings.searchString1 = txtString1.Text;
+        }
+        else if (sender == txtString2)
+        {
+            _FormSettings.searchString2 = txtString2.Text;
+        }
 
-        _FormSettings.searchString1 = txtString1.Text;
         e.Handled = true;
 
         EnableControls();

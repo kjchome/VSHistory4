@@ -29,6 +29,8 @@ public class VSHistoryFile
     /// </summary>
     public static string VSHistoryTimestampFormat => "yyyy-MM-dd_HH_mm_ss_fff";
 
+    private int? _NumFiltered;
+
     private long? _ClusterSize;
 
     /// <summary>
@@ -45,6 +47,25 @@ public class VSHistoryFile
     /// Accessor function.
     /// </summary>
     public int NumHistoryFiles => VSHistoryFiles.Count;
+
+    /// <summary>
+    /// The number of VSHistory files that are filtered out.
+    /// These files have the filter suffix ("-") in the filename.
+    /// </summary>
+    public int NumFiltered
+    {
+        get
+        {
+            if (_NumFiltered == null)
+            {
+                _NumFiltered = VSHistoryFiles
+                    .Where(n => Path.GetFileNameWithoutExtension(n.Name)
+                        .EndsWith(FilterVersions.FilterSuffixStr)).Count();
+            }
+
+            return (int)_NumFiltered;
+        }
+    }
 
     /// <summary>
     /// FileInfo of the file in the VS project.
@@ -148,6 +169,11 @@ public class VSHistoryFile
                     _VSHistoryFiles = [.. VSHistoryDir.GetFiles(VSHistoryFilenameMask)];
                     _VSHistoryFiles.Reverse();
                 }
+
+                //
+                // Force the number of filtered files to be re-computed.
+                //
+                _NumFiltered = null;
             }
 
             return _VSHistoryFiles;
@@ -485,6 +511,11 @@ public class VSHistoryFile
         // Purge history files in case we've exceeded some limit.
         //
         PurgeHistoryFile(this);
+
+        //
+        // Force the number of filtered files to be re-computed.
+        //
+        _NumFiltered = null;
     }
 
     /// <summary>
