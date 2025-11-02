@@ -177,16 +177,20 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
         // If there are some VS History files filtered out,
         // show them in the caption, "7/10 VS History Files for ...".
         //
+        // Invoke NumHistoryFiles first to make sure
+        // that NumFiltered gets set properly.
+        //
+        int iNumHistoryFiles = vsFile.NumHistoryFiles;
         if (vsFile.NumFiltered > 0)
         {
-            int iUnfiltered = vsFile.NumHistoryFiles - vsFile.NumFiltered;
+            int iUnfiltered = iNumHistoryFiles - vsFile.NumFiltered;
 
-            sCaption = $"{iUnfiltered:N0}/{vsFile.NumHistoryFiles:N0} " +
+            sCaption = $"{iUnfiltered:N0}/{iNumHistoryFiles:N0} " +
                 $"VS History Files for {vsFile.Name}";
         }
         else
         {
-            sCaption = $"{vsFile.NumHistoryFiles:N0} VS History Files for {vsFile.Name}";
+            sCaption = $"{iNumHistoryFiles:N0} VS History Files for {vsFile.Name}";
         }
 
         g_VSToolWindowPane.Caption = sCaption;

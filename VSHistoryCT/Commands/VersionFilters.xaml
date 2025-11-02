@@ -120,6 +120,7 @@
             x:Name="txtString2"
             Grid.Row="7"
             Text="{Binding searchString2, Mode=TwoWay}"
+            TextChanged="txtString1_TextChanged"
             Margin="5"
             />
 

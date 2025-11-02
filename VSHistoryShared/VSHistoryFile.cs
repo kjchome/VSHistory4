@@ -509,7 +509,33 @@ public class VSHistoryFile
         //
         // Purge history files in case we've exceeded some limit.
         //
-        PurgeHistoryFile(this);
+        bool bAnyPurged = PurgeHistoryFile(this);
+
+        //
+        // Get the filter settings, if any, and get the
+        // list of filtered filenames.
+        //
+        string sFilterPath =
+            Path.Combine(VSHistoryDir.FullName, FilterVersions.FilterSettingsName);
+
+        if (File.Exists(sFilterPath))
+        {
+            FilterVersions filterVersions = new(sFilterPath);
+
+            //
+            // If any files were purged, we must force the entire list
+            // of files to be filtered again. This is done by setting
+            // the highest version timestamp to DateTime.MinValue.
+            //
+            if (bAnyPurged)
+            {
+                filterVersions.highestVersion = DateTime.MinValue;
+                FilterVersions.Filter(VSHistoryDir, filterVersions);
+            }
+            
+            FilteredFilenames.Clear();
+            FilteredFilenames.AddRange(filterVersions.FilteredFiles);
+        }
     }
 
     /// <summary>

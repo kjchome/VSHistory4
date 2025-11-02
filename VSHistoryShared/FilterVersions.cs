@@ -31,7 +31,7 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
     /// <summary>
     /// List of filenames that are filtered out.
     /// </summary>
-    public List<string> FilteredFiles { get; set; } = new();
+    public HashSet<string> FilteredFiles { get; set; } = new();
 
     /// <summary>
     /// If true, the file exists.
@@ -226,7 +226,8 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
         //
         // Use the highest version timestamp to check
         // whether any files have already been checked.
-        // If this is new settings, it will be DateTime.MinValue.
+        // If this is DateTime.MinValue, then the entire
+        // list of files will be checked.
         //
         DateTime dtHighest = settings.highestVersion;
 
@@ -269,8 +270,8 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
             // faster to read the whole file rather than File.ReadLines().
             //
             // There are exceptions to this, of course, like a very large
-            // file where the "Include" string is early in the file.
-            // But accommodating these exceptions lead to a lot of 
+            // file where an "Include" string is early in the file.
+            // But accommodating these exceptions lead to a lot more
             // complexity, so ... meh.
             //
             string sContents = File.ReadAllText(sPath);

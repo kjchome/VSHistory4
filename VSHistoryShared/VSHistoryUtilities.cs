@@ -592,11 +592,14 @@ public static class VSHistoryUtilities
     /// Purge any VS history files that lie outside of the current settings.
     /// </summary>
     /// <param name="vsHistoryFile"></param>
-    public static void PurgeHistoryFile(VSHistoryFile vsHistoryFile)
+    /// <returns>True if any files were purged</returns>
+    public static bool PurgeHistoryFile(VSHistoryFile vsHistoryFile)
     {
+        bool bAnyPurged = false;
+
         if (!VsSettings.Enabled || !vsHistoryFile.HasHistoryFiles)
         {
-            return;
+            return bAnyPurged;
         }
 
         ThreadHelper.ThrowIfNotOnUIThread();
@@ -645,6 +648,7 @@ public static class VSHistoryUtilities
                 try
                 {
                     fileInfo.Delete();
+                    bAnyPurged = true;
                 }
                 catch { }
 
@@ -696,6 +700,7 @@ public static class VSHistoryUtilities
                         try
                         {
                             fileInfo.Delete();
+                            bAnyPurged = true;
                         }
                         catch { }
 
@@ -755,6 +760,7 @@ public static class VSHistoryUtilities
                 try
                 {
                     fi.Delete();
+                    bAnyPurged = true;
 
                     VSLogMsg(string.Format(
                         "Too much space, removed {0} {1:N0} bytes at index {2}",
@@ -778,7 +784,7 @@ public static class VSHistoryUtilities
             catch { }
         }
 
-        return;
+        return bAnyPurged;
     }
 }
 
