@@ -3,14 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+        xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
         xmlns:local="clr-namespace:VSHistory"
         mc:Ignorable="d"
         Title="Filter VS History Versions"
         WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight"
         Loaded="Window_Loaded"
-        Height="500"
-        Width="600">
+        Height="300"
+        Width="700">
 
     <Grid Margin="7">
 
@@ -37,9 +39,48 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="5">
-            Enter strings to only include the VS History files that will be shown in the list for
-        </TextBlock>
+        <Grid Grid.Row="0" >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="5,0,10,0">
+                Enter strings to only include the VS History files that will be shown for:
+            </TextBlock>
+
+            <TextBlock
+                Text="Click for detailed help. "
+                VerticalAlignment="Center"
+                FontSize="12"
+                Grid.Column="1"
+                />
+
+            <imaging:CrispImage
+                x:Name="imgHelp"
+                Height="24" Width="24"
+                Grid.Column="2"
+                PreviewMouseLeftButtonDown="imgHelp_PreviewMouseLeftButtonDown"
+                Moniker="{x:Static catalog:KnownMonikers.StatusHelp}" 
+                Margin="0,0,10,0"
+                />
+
+            <!--
+                This is for testing since I can't get the CrispImage to show up.
+                It will be invisible when running in Visual Studio.
+            -->
+            <Button
+                x:Name="btnHelp"
+                Content="?"
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                PreviewMouseLeftButtonDown="imgHelp_PreviewMouseLeftButtonDown"
+                Padding="4,0"
+                />
+
+        </Grid>
 
         <TextBlock
             x:Name="txtFilename"

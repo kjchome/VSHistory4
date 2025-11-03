@@ -479,6 +479,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="..\VSHistoryCT\Help\HelpFilter.xaml">
+      <Link>Help\HelpFilter.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="..\VSHistoryCT\Settings\MainWindow.xaml">
       <Link>Settings\MainWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -537,6 +542,10 @@
     <Compile Include="..\VSHistoryCT\Help\HelpFileExclusions.xaml.cs">
       <Link>Help\HelpFileExclusions.xaml.cs</Link>
       <DependentUpon>HelpFileExclusions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\VSHistoryCT\Help\HelpFilter.xaml.cs">
+      <Link>Help\HelpFilter.xaml.cs</Link>
+      <DependentUpon>HelpFilter.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\VSHistoryCT\Settings\MainWindow.xaml.cs">
       <Link>Settings\MainWindow.xaml.cs</Link>

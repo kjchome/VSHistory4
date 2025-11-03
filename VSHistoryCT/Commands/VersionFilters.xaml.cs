@@ -66,6 +66,17 @@ public partial class VersionFilters : Window
         DataContext = _FormSettings;
 
         EnableControls();
+
+#if VSHISTORY_PACKAGE
+        //
+        // The CrispImage (Help icon) only shows up when running in the extension.
+        //
+        imgHelp.Visibility = System.Windows.Visibility.Visible;
+        btnHelp.Visibility = System.Windows.Visibility.Collapsed;
+#else
+        imgHelp.Visibility = System.Windows.Visibility.Collapsed;
+        btnHelp.Visibility = System.Windows.Visibility.Visible;
+#endif
     }
 
     /// <summary>
@@ -223,5 +234,11 @@ public partial class VersionFilters : Window
         // Start the user here.
         //
         txtString1.Focus();
+    }
+
+    private void imgHelp_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        Help.HelpFilter helpFilter = new();
+        helpFilter.ShowDialog();
     }
 }

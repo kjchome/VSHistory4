@@ -1,0 +1,135 @@
+﻿<Window x:Class="VSHistory.Help.HelpFilter"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSHistory.Help"
+        mc:Ignorable="d"
+        Title="Filter Help"
+        FontSize="12"
+        WindowStartupLocation="CenterScreen"
+        Height="600"
+        Width="500">
+
+    <ScrollViewer Margin="10">
+
+        <Grid>
+
+            <Grid.Resources>
+
+                <Style x:Key="LongText" TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+
+                <Style x:Key="Title" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Margin" Value="10,5" />
+                </Style>
+
+            </Grid.Resources>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+
+                <TextBlock Style="{StaticResource Title}" Text="Filtering VS History Files" />
+
+                <Button
+                    Content="Close"
+                    IsCancel="True"
+                    Padding="5,2"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="1">
+                The VS History Files Filter feature lets you only list
+                the files in which you are currently interested
+                in the VS History toolbox.
+                <LineBreak/>
+                <LineBreak/>
+                For example, if you're looking for VS History Files 
+                that have a certain function like "MyFunction", you can
+                set the filter to only include VS History Files 
+                that contain that function.
+                <LineBreak/>
+                <LineBreak/>
+                Technically, any
+                VS History Files that contain the string "MyFunction"
+                will match. You can narrow the search 
+                to help ensure the function is there with
+                a string like "MyFunction("..
+                <LineBreak/>
+                <LineBreak/>
+                Conversely, if you're looking for VS History Files 
+                that DO NOT contain function, "MyFunction", you can
+                specify that instead.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource LongText}" FontWeight="Bold" Grid.Row="2">
+                When a filter is active for a file, you will see
+                a check mark &#x2713; next to the Filter button at the top
+                of the toolbox.
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="3"
+                Style="{StaticResource Title}"
+                Text="Filter Part 1" />
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="4">
+                The first filter is simply a string that
+                MUST or MUST NOT exist in the files.
+                <LineBreak/>
+                <LineBreak/>
+                In addition, you can choose whether to ignore case
+                when searching.  For example, if you set "MyFunction"
+                as the search string and also check the "Ignore case"
+                checkbox, then "MyFunction", "myfunction", etc., will
+                all match the string.
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="5"
+                Style="{StaticResource Title}"
+                Text="Filter Part 2" />
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="6">
+                The second filter is a string that MAY ALSO,
+                MUST ALSO or MUST NOT exist in the files in addition
+                to the first filter string.
+            </TextBlock>
+
+            <TextBlock
+                Grid.Row="7"
+                Style="{StaticResource Title}"
+                Text="Clear the Filter" />
+
+            <TextBlock Style="{StaticResource LongText}" Grid.Row="8">
+                Clicking the "Clear" button will clear all settings so
+                that no filtering will be performed and all your VS History
+                files will be displayed in the toolbox.
+                <LineBreak/>
+                <LineBreak/>
+                Keep in mind that you must click the OK button to save your changes
+            </TextBlock>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</Window>

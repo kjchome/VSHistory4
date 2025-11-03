@@ -530,9 +530,14 @@ public class VSHistoryFile
             if (bAnyPurged)
             {
                 filterVersions.highestVersion = DateTime.MinValue;
-                FilterVersions.Filter(VSHistoryDir, filterVersions);
             }
-            
+
+            //
+            // Update the list of filtered files. Only new files will
+            // be checked (unless bAnyPurged is true).
+            //
+            FilterVersions.Filter(VSHistoryDir, filterVersions);
+
             FilteredFilenames.Clear();
             FilteredFilenames.AddRange(filterVersions.FilteredFiles);
         }

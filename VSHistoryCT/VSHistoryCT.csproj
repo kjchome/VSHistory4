@@ -72,6 +72,9 @@
     <Compile Include="Help\HelpFileExclusions.xaml.cs">
       <DependentUpon>HelpFileExclusions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Help\HelpFilter.xaml.cs">
+      <DependentUpon>HelpFilter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings\FileDifference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\VSHistoryWindowCommand.cs" />
@@ -150,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Help\HelpFileExclusions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Help\HelpFilter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
