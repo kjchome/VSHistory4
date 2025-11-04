@@ -106,35 +106,33 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
             FileInfo fileInfo = new FileInfo(filterSettingsPath);
             FileExists = fileInfo.Exists;
 
-            if (fileInfo.Exists)
+            if (!fileInfo.Exists)
             {
-                using FileStream fileStream = fileInfo.OpenRead();
+                return;
+            }
 
+            //
+            // Read the settings from the file into filterSettings.
+            //
+            XmlSerializer xml = new(typeof(FilterVersions));
+
+            using StreamReader reader = new(fileInfo.OpenRead(), Encoding.UTF8);
+            FilterVersions filterSettings = (FilterVersions)xml.Deserialize(reader);
+
+            //
+            // Copy all the public properties of filterSettings to this.
+            //
+            PropertyInfo[] properties = typeof(FilterVersions)
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (PropertyInfo property in properties)
+            {
                 //
-                // Read the settings from the file into filterSettings.
+                // Set the value if the field has a set accessor.
                 //
-                XmlSerializer xml = new(typeof(FilterVersions));
-
-                FilterVersions? filterSettings = (FilterVersions)xml.Deserialize(fileStream);
-
-                if (filterSettings != null)
+                if (property.GetSetMethod() != null)
                 {
-                    //
-                    // Copy all the public properties of filterSettings to this.
-                    //
-                    PropertyInfo[] properties = typeof(FilterVersions)
-                        .GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-                    foreach (PropertyInfo property in properties)
-                    {
-                        //
-                        // Set the value if the field has a set accessor.
-                        //
-                        if (property.GetSetMethod() != null)
-                        {
-                            property.SetValue(this, property.GetValue(filterSettings, null), null);
-                        }
-                    }
+                    property.SetValue(this, property.GetValue(filterSettings, null), null);
                 }
             }
         }
@@ -203,13 +201,10 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
         string sSettingsPath = Path.Combine(versionDir.FullName, FilterSettingsName);
         FileInfo fiSettings = new(sSettingsPath);
 
-        if (settings == null)
-        {
-            //
-            // Read the settings from the settings file, if any.
-            //
-            settings = fiSettings.Exists ? new(sSettingsPath) : new();
-        }
+        //
+        // Read the settings from the settings file, if any.
+        //
+        settings ??= fiSettings.Exists ? new(sSettingsPath) : new();
 
         //
         // If filters are empty, just delete the filter file and we're done.
@@ -359,8 +354,8 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
                 settings.FilteredFiles.Add(sNameOnly);
             }
 
-            VSLogMsg($"Read {sContents.Length:N0} chars from {Path.GetFileName(sPath)}, " +
-                $"Include: {bIncludeFile}, Found1: {bFound1}, Found2: {bFound2}", Severity.Info);
+            //VSLogMsg($"Read {sContents.Length:N0} chars from {Path.GetFileName(sPath)}, " +
+            //    $"Include: {bIncludeFile}, Found1: {bFound1}, Found2: {bFound2}", Severity.Info);
         }
 
         VSLogMsg($"Read {bytesRead:N0} chars from {iNumFiles:N0} files in {sw.Elapsed}",
@@ -376,9 +371,11 @@ public class FilterVersions : INotifyPropertyChanged, ICloneable
                 settings.highestVersion = dtHighest;
 
                 XmlSerializer xml = new(typeof(FilterVersions));
+
                 using (FileStream fs = fiSettings.Create())
+                using (StreamWriter writer = new(fs, Encoding.UTF8))
                 {
-                    xml.Serialize(fs, settings);
+                    xml.Serialize(writer, settings);
                 }
             }
             catch

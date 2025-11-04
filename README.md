@@ -107,6 +107,8 @@ For example, if you're looking for VS History Files that have a certain function
 
 Technically, any VS History Files that contain the string "MyFunction" will match. You can narrow the search to help ensure the function is there with a string like "MyFunction("..
 
+You can also choose whether the search should be case-sensitive or not by using the "Ignore case" checkbox.
+
 ![Filter](Filter.png)
 
 [Help for Filters](Help_Filters.png)

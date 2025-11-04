@@ -131,9 +131,10 @@ public partial class VersionFilters : Window
                 _FormSettings.highestVersion = DateTime.MinValue;
 
                 XmlSerializer xml = new(typeof(FilterVersions));
-                using (FileStream fs = fileInfo.Create())
+
+                using (StreamWriter writer = new(fileInfo.Create(), Encoding.UTF8))
                 {
-                    xml.Serialize(fs, _FormSettings);
+                    xml.Serialize(writer, _FormSettings);
                 }
             }
             catch

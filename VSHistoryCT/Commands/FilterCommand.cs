@@ -84,7 +84,7 @@ internal sealed class FilterCommand : BaseCommand<FilterCommand>
             //
             // The filter was changed.  Refresh the tool window.
             //
-            RefreshVSHistoryWindow(bForce: true);
+            RefreshVSHistoryWindow(historyFile.FullPath, true);
         }
     }
 }
