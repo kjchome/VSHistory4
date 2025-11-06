@@ -18,6 +18,7 @@
             <Button guid="VSHistory" id="VSHistoryAllFiles" priority="0x0001">
                 <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
                 <Icon guid="ImageCatalogGuid" id="ShowAllFiles" />
+                <CommandFlag>TextChanges</CommandFlag>
                 <CommandFlag>IconIsMoniker</CommandFlag>
                 <CommandFlag>IconAndText</CommandFlag>
                 <Strings>
@@ -29,6 +30,7 @@
             <Button guid="VSHistory" id="VSHistory" priority="0x0003">
                 <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
                 <Icon guid="ImageCatalogGuid" id="Settings" />
+                <CommandFlag>TextChanges</CommandFlag>
                 <CommandFlag>IconIsMoniker</CommandFlag>
                 <CommandFlag>IconAndText</CommandFlag>
                 <Strings>
@@ -40,11 +42,24 @@
             <Button guid="VSHistory" id="VSHistoryOpen" priority="0x0004">
                 <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
                 <Icon guid="ImageCatalogGuid" id="OpenFolder" />
+                <CommandFlag>TextChanges</CommandFlag>
                 <CommandFlag>IconIsMoniker</CommandFlag>
                 <CommandFlag>IconAndText</CommandFlag>
                 <Strings>
                     <ButtonText>Open</ButtonText>
                     <ToolTipText>Open the folder containing these VSHistory files</ToolTipText>
+                </Strings>
+            </Button>
+
+            <Button guid="VSHistory" id="VSHistoryFilter" priority="0x0005">
+                <Parent guid="VSHistory" id="VSHistoryToolbarGroup" />
+                <Icon guid="ImageCatalogGuid" id="FilterPendingChanges" />
+                <CommandFlag>TextChanges</CommandFlag>
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>IconAndText</CommandFlag>
+                <Strings>
+                    <ButtonText>Filter</ButtonText>
+                    <ToolTipText>Filter the VSHistory files</ToolTipText>
                 </Strings>
             </Button>
 
@@ -123,6 +138,7 @@
             <IDSymbol name="VSHistoryAllFiles" value="0x0201" />
             <IDSymbol name="VSHistory" value="0x0203" />
             <IDSymbol name="VSHistoryOpen" value="0x0204" />
+            <IDSymbol name="VSHistoryFilter" value="0x0205" />
 
             <IDSymbol name="VSHistoryToolbarGroup" value="0x1101" />
 

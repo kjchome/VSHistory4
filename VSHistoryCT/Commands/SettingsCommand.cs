@@ -35,6 +35,19 @@ internal sealed class SettingsCommandFromMenu : BaseCommand<SettingsCommandFromM
             RefreshVSHistoryWindow(bForce: true);
         }
     }
+
+    private static bool Localized;
+
+    protected override void BeforeQueryStatus(EventArgs e)
+    {
+        if (!Localized)
+        {
+            Localized = true;
+            Command.Text = LocalizedString("Settings");
+        }
+
+        base.BeforeQueryStatus(e);
+    }
 }
 
 /// <summary>

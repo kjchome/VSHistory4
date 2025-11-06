@@ -54,6 +54,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\AllFilesCommand.cs" />
+    <Compile Include="Commands\FilterCommand.cs" />
+    <Compile Include="Commands\VersionFilters.xaml.cs">
+      <DependentUpon>VersionFilters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Commands\OpenCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Events\SettingsWatcher.cs" />
@@ -67,6 +71,9 @@
     </Compile>
     <Compile Include="Help\HelpFileExclusions.xaml.cs">
       <DependentUpon>HelpFileExclusions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Help\HelpFilter.xaml.cs">
+      <DependentUpon>HelpFilter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\FileDifference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -133,6 +140,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ToolWindows\VSHistoryToolWindow.cs" />
+    <Page Include="Commands\VersionFilters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Help\HelpChooseLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -142,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Help\HelpFileExclusions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Help\HelpFilter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

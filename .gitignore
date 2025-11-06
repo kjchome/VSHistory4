@@ -351,6 +351,4 @@ MigrationBackup/
 
 # VSHistory History files
 .vshistory/
-/VSHistoryCT v4.0
-/VSHistorySetVersion
 /VSHistoryShared/BuildTimestamp.cs

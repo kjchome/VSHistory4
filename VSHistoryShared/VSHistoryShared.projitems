@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BuildTimestamp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterVersions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SolutionInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VSHistoryFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VSHistoryUtilities.cs" />

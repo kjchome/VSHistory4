@@ -459,6 +459,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="..\VSHistoryCT\Commands\VersionFilters.xaml">
+      <Link>VersionFilters.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="..\VSHistoryCT\Help\HelpChooseLocation.xaml">
       <Link>Help\HelpChooseLocation.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -471,6 +476,11 @@
     </Page>
     <Page Include="..\VSHistoryCT\Help\HelpFileExclusions.xaml">
       <Link>Help\HelpFileExclusions.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\VSHistoryCT\Help\HelpFilter.xaml">
+      <Link>Help\HelpFilter.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -514,6 +524,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="..\VSHistoryCT\Commands\VersionFilters.xaml.cs">
+      <Link>VersionFilters.xaml.cs</Link>
+      <DependentUpon>VersionFilters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\VSHistoryCT\Events\SettingsWatcher.cs">
       <Link>Events\SettingsWatcher.cs</Link>
     </Compile>
@@ -528,6 +542,10 @@
     <Compile Include="..\VSHistoryCT\Help\HelpFileExclusions.xaml.cs">
       <Link>Help\HelpFileExclusions.xaml.cs</Link>
       <DependentUpon>HelpFileExclusions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\VSHistoryCT\Help\HelpFilter.xaml.cs">
+      <Link>Help\HelpFilter.xaml.cs</Link>
+      <DependentUpon>HelpFilter.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\VSHistoryCT\Settings\MainWindow.xaml.cs">
       <Link>Settings\MainWindow.xaml.cs</Link>
@@ -622,7 +640,6 @@
   <Import Project="..\VSHistoryCT\packages\Microsoft.VisualStudio.SDK.Analyzers.17.7.47\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\VSHistoryCT\packages\Microsoft.VisualStudio.SDK.Analyzers.17.7.47\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
   <Import Project="..\VSHistoryCT\packages\Microsoft.VsSDK.CompatibilityAnalyzer.17.13.2126\build\Microsoft.VsSDK.CompatibilityAnalyzer.targets" Condition="Exists('..\VSHistoryCT\packages\Microsoft.VsSDK.CompatibilityAnalyzer.17.13.2126\build\Microsoft.VsSDK.CompatibilityAnalyzer.targets')" />
   <Import Project="..\VSHistoryCT\packages\Microsoft.VSSDK.BuildTools.17.13.2126\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\VSHistoryCT\packages\Microsoft.VSSDK.BuildTools.17.13.2126\build\Microsoft.VSSDK.BuildTools.targets')" />
-
   <!--
   The following is to provide a timestamp of when the project was built.
   The BuildTimestamp Property contains the timestamp in Universal format
@@ -640,5 +657,4 @@
   <Target Name="BeforeBuild">
     <WriteLinesToFile File="..\VSHistoryShared\BuildTimestamp.cs" Lines="// Created automatically by the BeforeBuild Target in the project file.&#xD;&#xA;internal class BuildTimestamp&#xD;&#xA;{&#xD;&#xA;    public const string CompileTime = &quot;$([System.DateTime]::UtcNow.ToString('u'))&quot;%3B &#xD;&#xA;}" Overwrite="true" />
   </Target>
-
 </Project>

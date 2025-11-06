@@ -101,8 +101,14 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
         {
             foreach (FileInfo fileInfo in vsHistoryFile.VSHistoryFiles)
             {
-                VSHistoryRow newRow = new VSHistoryRow(fileInfo, vsHistoryFile.VSFileInfo);
-                g_VSControl.VSHistoryRows.Add(newRow);
+                //
+                // Exclude any files that have been filtered out.
+                //
+                if (!vsHistoryFile.FilteredFilenames.Contains(fileInfo.Name))
+                {
+                    VSHistoryRow newRow = new VSHistoryRow(fileInfo, vsHistoryFile.VSFileInfo);
+                    g_VSControl.VSHistoryRows.Add(newRow);
+                }
             }
         }
 
@@ -165,8 +171,27 @@ public class VSHistoryToolWindow : BaseToolWindow<VSHistoryToolWindow>
             return;
         }
 
-        string sCaption =
-                $"{vsFile.NumHistoryFiles:N0} VS History Files for {vsFile.Name}";
+        string sCaption;
+
+        //
+        // If there are some VS History files filtered out,
+        // show them in the caption, "7/10 VS History Files for ...".
+        //
+        // Invoke NumHistoryFiles first to make sure
+        // that NumFiltered gets set properly.
+        //
+        int iNumHistoryFiles = vsFile.NumHistoryFiles;
+        if (vsFile.NumFiltered > 0)
+        {
+            int iUnfiltered = iNumHistoryFiles - vsFile.NumFiltered;
+
+            sCaption = $"{iUnfiltered:N0}/{iNumHistoryFiles:N0} " +
+                $"VS History Files for {vsFile.Name}";
+        }
+        else
+        {
+            sCaption = $"{iNumHistoryFiles:N0} VS History Files for {vsFile.Name}";
+        }
 
         g_VSToolWindowPane.Caption = sCaption;
 

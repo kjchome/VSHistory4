@@ -99,6 +99,20 @@ You can choose to have a variety of directories be excluded from VSHistory proce
 
 [Help for Directory Exclusions](Help_DirExclusions.png)
 
+### Filters
+
+The VS History Files Filter feature lets you only list the files in which you are currently interested in the VS History toolbox.
+
+For example, if you're looking for VS History Files that have a certain function like "MyFunction", you can set the filter to only include VS History Files that contain that function.
+
+Technically, any VS History Files that contain the string "MyFunction" will match. You can narrow the search to help ensure the function is there with a string like "MyFunction("..
+
+You can also choose whether the search should be case-sensitive or not by using the "Ignore case" checkbox.
+
+![Filter](Filter.png)
+
+[Help for Filters](Help_Filters.png)
+
 ### Changes in VSHistory 4.0
 
 #### Updated Settings
@@ -113,7 +127,9 @@ You can also have a different location where the VSHistory files are stored for 
 
 #### Support for Long Paths
 
-Visual Studio doesn't natively support long paths for files or directories (>260 characters). Since VSHistory can potentially produce long paths, the paths used in VSHistory include the prefix to support long paths, such as `\\?\C:\SomeDir\MyProject\Genius.cs`.
+Visual Studio doesn't natively support long paths for files (>260 characters). Since VSHistory can potentially produce long paths, the paths used in VSHistory include the prefix to support long paths, such as
+
+`\\?\C:\SomeLongPath\MyProject\Genius.cs`
 
 This works regardless of whether or not long paths are enabled in the registry (`HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled `).
 
@@ -157,6 +173,7 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.1.0 Added VS History File Filters
 * 4.0.13 Fixed the dates displayed in the Date Formats window in Settings.
 * 4.0.12 Fixed a regression problem introduced in 4.0.7 where the current file was saved even if VSHistory was disabled.
 * 4.0.11 Changed so that when the difference of two versions is selected using the checkboxes, both sides of the differences page are read-only.

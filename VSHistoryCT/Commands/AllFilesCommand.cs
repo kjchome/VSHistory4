@@ -23,4 +23,17 @@ internal sealed class AllFilesCommand : BaseCommand<AllFilesCommand>
             RefreshVSHistoryWindow(bForce: true);
         }
     }
+
+    private static bool Localized;
+
+    protected override void BeforeQueryStatus(EventArgs e)
+    {
+        if (!Localized)
+        {
+            Localized = true;
+            Command.Text = LocalizedString("All files");
+        }
+
+        base.BeforeQueryStatus(e);
+    }
 }
