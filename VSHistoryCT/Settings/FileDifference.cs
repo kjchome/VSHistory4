@@ -144,10 +144,7 @@ internal class FileDifferenceClass
             // then we want to remove the "\\?\" prefix so that it is recognized
             // as a project file by the difference service.
             //
-            if (sRightFile.StartsWith(@"\\?\"))
-            {
-                sRightFile = sRightFile.Substring(4);
-            }
+            sRightFile = ShortPath(sRightFile);
 
             IVsWindowFrame differenceFrame = differenceService.OpenComparisonWindow2(
                 sLeftFile,

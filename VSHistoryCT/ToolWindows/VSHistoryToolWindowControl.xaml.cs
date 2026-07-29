@@ -1,6 +1,6 @@
-﻿using System.Globalization;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace VSHistory;
 
@@ -140,5 +140,58 @@ public partial class VSHistoryToolWindowControl : UserControl
 
         ThreadHelper.JoinableTaskFactory.Run(() =>
             docs.OpenInPreviewTabAsync(row!.VSHistoryFileInfo.FullName));
+    }
+
+    private void DataGridCell_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        bool bOK = true;
+        string sMsg = "";
+
+        if (LatestHistoryFile != null && e.Device is MouseDevice mouse)
+        {
+            if (mouse.DirectlyOver is TextBlock text && text.DataContext is VSHistoryRow row)
+            {
+                var _rdt = new RunningDocumentTable();
+                string sMoniker = ShortPath(LatestHistoryFile.FullPath);
+                RunningDocumentInfo rdi = _rdt.GetDocumentInfo(sMoniker);
+
+                if (rdi.IsDocumentInitialized && rdi.IsDirty)
+                {
+                    bOK = false;
+                    sMsg = "The currently open file must be saved first.";
+                }
+                else
+                {
+                    FileInfo fi1 = row.VSHistoryFileInfo;
+                    FileInfo fi2 = LatestHistoryFile.VSFileInfo;
+                    Debug.Assert(fi1.Exists && fi2.Exists);
+
+                    if (fi1.Length == fi2.Length && fi1.LastWriteTime == fi2.LastWriteTime)
+                    {
+                        bOK = false;
+                        sMsg = "This is the same file as the currently open file.  Nothing to do.";
+                    }
+                    else
+                    {
+                        sMsg = $"This will revert {LatestHistoryFile.Name} to the version from\n\n" +
+                            $"{row.PrettyWhenSaved}\n\nDo you want to revert to this version?";
+                    }
+                }
+
+                if(bOK)
+                {
+                    MessageBoxResult result = MessageBox.Show(sMsg, "Revert from Version",
+                        MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.OK)
+                    {
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(sMsg, "Cannot Revert", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
     }
 }

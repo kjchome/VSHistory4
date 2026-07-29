@@ -671,11 +671,7 @@ public class ExcludedDirOrFile
                 //
                 // Skip over "\\?\" prefix if it exists.
                 //
-                string sTrim = Name;
-                if (sTrim.StartsWith(@"\\?\"))
-                {
-                    sTrim = sTrim.Substring(4);
-                }
+                string sTrim = ShortPath(Name);
 
                 if (sTrim.IndexOfAny(InvalidDirChars) >= 0)
                 {

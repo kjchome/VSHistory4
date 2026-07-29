@@ -47,7 +47,7 @@ public partial class VersionFilters : Window
         //
         // Display the path but remove the "\\?\" prefix.
         //
-        txtFilename.Text = historyFile.FullPath.TrimStart(['\\', '?']);
+        txtFilename.Text = ShortPath(historyFile.FullPath);
 
         //
         // If there is a settings file, load it.

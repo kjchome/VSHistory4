@@ -2,6 +2,7 @@
 using System.Globalization;
 
 namespace VSHistoryShared;
+
 public static class Win32Utilities
 {
     /// <summary>
@@ -99,7 +100,7 @@ public static class Win32Utilities
         //
         // Compute the cluster size if the saved volume doesn't match.
         //
-        if (string.IsNullOrEmpty(_Volume) || _Volume != sVolume)
+        if (_Volume != sVolume)
         {
             bool bOK = GetDiskFreeSpace(sVolume!,
                 out uint lpSectorsPerCluster,
@@ -180,6 +181,7 @@ public static class Win32Utilities
 
                         case NO_ERROR:
                         case ERROR_MORE_DATA:
+
                             //
                             // NOTE: Compression is performed in 16-cluster units.
                             // So if a file is compressed and a given 16-cluster unit
@@ -243,29 +245,39 @@ public static class Win32Utilities
     {
         culture ??= CultureInfo.CurrentUICulture;
 
-        StringLookup xLookup = axLookups.Where(x => x.sKey == sKey).FirstOrDefault();
+        //
+        // As a small but common optimization, if this is an English culture, just return the key.
+        //
+        if (culture.IsNeutralCulture || culture.TwoLetterISOLanguageName == "en")
+        {
+            return sKey;
+        }
+
+        StringLookup xLookup = axLookups.FirstOrDefault(x => x.sKey == sKey);
         return xLookup?.Lookup(culture) ?? sKey;
     }
 
     /// <summary>
     /// Class to contain information to look up a string in a DLL.
     /// </summary>
-    private class StringLookup
+    /// <param name="_sKey">
+    /// The string to look up, e.g., "Open".
+    /// </param>
+    /// <param name="_sLibrary">
+    /// The name of the DLL to use, e.g., "shell32.dll"
+    /// </param>
+    /// <param name="_iStringIndex">
+    /// The index into the string table of the DLL for the string to look up.
+    /// </param>
+    private class StringLookup(string _sKey, string _sLibrary, uint _iStringIndex)
     {
         private Dictionary<CultureInfo, string> cultureStrings = new();
 
-        public uint iStringIndex { get; }
+        public uint iStringIndex { get; } = _iStringIndex;
 
-        public string sKey { get; }
+        public string sKey { get; } = _sKey;
 
-        public string sLibrary { get; }
-
-        public StringLookup(string s1, string s2, uint i)
-        {
-            sKey = s1;
-            sLibrary = s2;
-            iStringIndex = i;
-        }
+        public string sLibrary { get; } = _sLibrary;
 
         /// <summary>
         /// Look up the string for this key given a specific culture.

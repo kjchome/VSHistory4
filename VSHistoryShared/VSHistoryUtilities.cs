@@ -230,6 +230,16 @@ public static class VSHistoryUtilities
     }
 
     /// <summary>
+    /// Remove the "\\?\" prefix from a path.
+    /// </summary>
+    /// <param name="sPath"></param>
+    /// <returns></returns>
+    public static string ShortPath(string sPath)
+    {
+        return sPath.TrimStart(['\\', '?']);
+    }
+
+    /// <summary>
     /// Build a path using the "\\?\" prefix
     /// to support long (>260 character) paths.
     /// </summary>
