@@ -5,6 +5,12 @@
 /// </summary>
 public class VSHistoryRow
 {
+    /// <summary>
+    /// If true, the Size and Date fields for this row in the tool window will
+    /// be bold. Currently, this is only used when reverting a file from a
+    /// previous version, in which case the previous version is set Bold to show
+    /// where the revert was done.
+    /// </summary>
     public bool BoldText { get; set; } = false;
 
     /// <summary>

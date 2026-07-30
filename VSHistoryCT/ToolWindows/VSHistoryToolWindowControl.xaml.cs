@@ -189,9 +189,10 @@ public partial class VSHistoryToolWindowControl : UserControl
         //
         string sMoniker = ShortPath(LatestHistoryFile!.FullPath);
 
-        RunningDocumentTable _rdt = new RunningDocumentTable();
+        RunningDocumentTable _rdt = new();
         RunningDocumentInfo rdi = _rdt.GetDocumentInfo(sMoniker);
 
+        // For Debugging only.
         //foreach (RunningDocumentInfo doc in _rdt)
         //{
         //    Debug.WriteLine($"Cookie {doc.DocCookie,2} {doc.IsDocumentInitialized} Moniker {doc.Moniker} " +
@@ -201,12 +202,15 @@ public partial class VSHistoryToolWindowControl : UserControl
         if (!rdi.IsDocumentInitialized)
         {
             //
-            // Not sure we should have gotten here?
+            // Not sure we should ever get here?
             //
             Debug.Assert(rdi.IsDocumentInitialized);
             return;
         }
 
+        //
+        // Test to see if the current file has been written to but not saved.
+        //
         if (rdi.IsDirty)
         {
             MessageBox.Show("The currently open file must be saved first.",
@@ -229,6 +233,9 @@ public partial class VSHistoryToolWindowControl : UserControl
             return;
         }
 
+        //
+        // Make sure the operator want to do this.
+        //
         string sMsg = $"This will revert {LatestHistoryFile.Name} to the version from\n\n" +
                 $"{row.PrettyWhenSaved} ({row.FileSize:N0} bytes)\n\n" +
                 "Do you want to revert to this version?";
@@ -246,6 +253,10 @@ public partial class VSHistoryToolWindowControl : UserControl
         //
         try
         {
+            //
+            // We have to create a new file in order to get the file
+            // attributes (length, write time, etc.) revised.
+            //
             using (FileStream fsLive = File.Create(fiLiveFile.FullName))
             {
                 using (FileStream fsVersion = fiVersionFile.OpenRead())
@@ -277,6 +288,9 @@ public partial class VSHistoryToolWindowControl : UserControl
                 }
             }
 
+            //
+            // Display the new list of VSHistory versions.
+            //
             gridFiles.ItemsSource = null;
             gridFiles.ItemsSource = VSHistoryRows;
         }
@@ -285,7 +299,5 @@ public partial class VSHistoryToolWindowControl : UserControl
             MessageBox.Show($"Failed to revert from the version file: {ex}",
                 "Revert Failed", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-
     }
 }
