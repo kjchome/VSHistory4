@@ -5,6 +5,8 @@
 /// </summary>
 public class VSHistoryRow
 {
+    public bool BoldText { get; set; } = false;
+
     /// <summary>
     /// State of the checked box.  If 2 boxes are checked, then the
     /// difference between those 2 VS History files will be displayed.
@@ -16,14 +18,12 @@ public class VSHistoryRow
     /// If the file is compressed, it will have a ".gz" extension and will contain
     /// the size preceding that, e.g., ".cs.82828.gz" or ".cs.82828T.gz".
     /// </summary>
-    public long FileSize => SizeOfVSHistoryFile(VSHistoryFileInfo);
+    public long? FileSize => field ??= SizeOfVSHistoryFile(VSHistoryFileInfo);
 
     /// <summary>
     /// Show the "pretty" date/time for this history file.
     /// </summary>
-    public string PrettyWhenSaved => PrettyDateTime(VSHistoryFileInfo);
-
-    private string? _SizeOnDisk = null;
+    public string PrettyWhenSaved => field ??= PrettyDateTime(VSHistoryFileInfo);
 
     /// <summary>
     /// Actual size on disk.  The history file is compressed, so if it's
@@ -34,7 +34,7 @@ public class VSHistoryRow
     {
         get
         {
-            if (_SizeOnDisk == null)
+            if (field == null)
             {
                 //
                 // Size on disk in KB, where 1 KB = 1024 bytes.
@@ -42,15 +42,15 @@ public class VSHistoryRow
                 //
                 long lSize = GetSizeOnDisk(VSHistoryFileInfo, g_VSControl!.ClusterSize) / 1024;
 
-                _SizeOnDisk = $"Size on disk: {lSize:N0} KB";
+                field = $"Size on disk: {lSize:N0} KB";
                 if (VSHistoryFileInfo.Extension == ".gz")
                 {
-                    _SizeOnDisk += " (GZIP)";
+                    field += " (GZIP)";
                 }
             }
-            return _SizeOnDisk;
+            return field;
         }
-    }
+    } = null;
 
     /// <summary>
     /// The FileInfo of the VS project file associated with
@@ -69,7 +69,7 @@ public class VSHistoryRow
     /// e.g., "2025-04-06_12_05_40_770.cs".  This is used
     /// as the sort field to sort the "When Saved" column.
     /// </summary>
-    public DateTime WhenSaved => DateTimeFromFilename(VSHistoryFileInfo.FullName);
+    public DateTime? WhenSaved => field ??= DateTimeFromFilename(VSHistoryFileInfo.FullName);
 
     public VSHistoryRow(FileInfo fileInfo, FileInfo vsHistoryFile)
     {

@@ -142,9 +142,14 @@
                             <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
                             <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
                             <Setter Property="ToolTip" Value="{Binding SizeOnDisk}"/>
-                            <!-- This causes ugly white spaces when the Dark theme is used.
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
-                            -->
+
+                            <!-- Set bold if BoldText is set in the VSHistoryRow. -->
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BoldText}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -163,6 +168,14 @@
                             <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
                             <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
                             <Setter Property="ToolTip" Value="Right-click to revert to this version"/>
+
+                            <!-- Set bold if BoldText is set in the VSHistoryRow. -->
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BoldText}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>

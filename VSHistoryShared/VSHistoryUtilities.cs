@@ -230,13 +230,30 @@ public static class VSHistoryUtilities
     }
 
     /// <summary>
-    /// Remove the "\\?\" prefix from a path.
+    /// Remove the "\\?\" prefix from a path if the path is like "\\?\X:\", or
+    /// change a network path from "\\?\UNC\server\share\dir" to "\\server\share\dir".
     /// </summary>
-    /// <param name="sPath"></param>
-    /// <returns></returns>
+    /// <param name="sPath">
+    /// </param>
+    /// <returns>
+    /// </returns>
     public static string ShortPath(string sPath)
     {
-        return sPath.TrimStart(['\\', '?']);
+        if (sPath.StartsWith(@"\\?\") && char.IsLetter(sPath[4]) && sPath[5] == ':')
+        {
+            //
+            // Change "\\?\C:\dir\file" to "C:\dir\file".
+            //
+            return sPath.Substring(4);
+        }
+        else if(sPath.StartsWith(@"\\?\UNC\"))
+        {
+            //
+            // Change "\\?\UNC\server\share\dir" to "\\server\share\dir".
+            //
+            return @"\" + sPath.Substring(7);
+        }
+        return sPath;
     }
 
     /// <summary>

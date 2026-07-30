@@ -75,6 +75,30 @@ public partial class VSHistoryToolWindowControl : UserControl
     }
 
     /// <summary>
+    /// We got a right-click somewhere in the tool window.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void DataGridCell_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        //
+        // Testing shows that the device is a Mouse regardless of
+        // the actual input device, like mouse, touch pad, touch screen, etc.
+        // (although I have not tested a Stylus).
+        //
+        if (LatestHistoryFile != null && e.Device is MouseDevice mouse)
+        {
+            //
+            // If the mouse is over a TextBlock (i.e., Size or Date), get the VSHistoryRow.
+            //
+            if (mouse.DirectlyOver is TextBlock text && text.DataContext is VSHistoryRow row)
+            {
+                RevertVersion(row);
+            }
+        }
+    }
+
+    /// <summary>
     /// The user clicked "Diff" on one of the rows in the Tool Window.
     /// </summary>
     /// <param name="sender"></param>
@@ -142,56 +166,103 @@ public partial class VSHistoryToolWindowControl : UserControl
             docs.OpenInPreviewTabAsync(row!.VSHistoryFileInfo.FullName));
     }
 
-    private void DataGridCell_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    /// <summary>
+    /// Revert the current document to a particular version.
+    /// 
+    /// 1. The current document must not be modified (dirty).
+    /// 2. The selected version cannot be the same as the current document (what's the point?).
+    /// 3. The operator is asked to confirm that the current document
+    ///    should be reverted to the selected version.
+    ///    
+    /// </summary>
+    /// <param name="row"></param>
+    private void RevertVersion(VSHistoryRow row)
     {
-        bool bOK = true;
-        string sMsg = "";
+        //
+        // For project files, the Moniker is the path to the file.
+        // Visual Studio really doesn't like long file paths like
+        // (\\?\C:\...).  Sad.
+        //
+        string sMoniker = ShortPath(LatestHistoryFile!.FullPath);
 
-        if (LatestHistoryFile != null && e.Device is MouseDevice mouse)
+        RunningDocumentTable _rdt = new RunningDocumentTable();
+        RunningDocumentInfo rdi = _rdt.GetDocumentInfo(sMoniker);
+
+        //foreach (RunningDocumentInfo doc in _rdt)
+        //{
+        //    Debug.WriteLine($"Cookie {doc.DocCookie,2} {doc.IsDocumentInitialized} Moniker {doc.Moniker} " +
+        //        $"Flags {doc.Flags} {(_VSRDTFLAGS)doc.Flags} {(_VSRDTFLAGS3)doc.Flags} {(_VSRDTFLAGS4)doc.Flags}");
+        //}
+
+        if (!rdi.IsDocumentInitialized)
         {
-            if (mouse.DirectlyOver is TextBlock text && text.DataContext is VSHistoryRow row)
-            {
-                var _rdt = new RunningDocumentTable();
-                string sMoniker = ShortPath(LatestHistoryFile.FullPath);
-                RunningDocumentInfo rdi = _rdt.GetDocumentInfo(sMoniker);
-
-                if (rdi.IsDocumentInitialized && rdi.IsDirty)
-                {
-                    bOK = false;
-                    sMsg = "The currently open file must be saved first.";
-                }
-                else
-                {
-                    FileInfo fi1 = row.VSHistoryFileInfo;
-                    FileInfo fi2 = LatestHistoryFile.VSFileInfo;
-                    Debug.Assert(fi1.Exists && fi2.Exists);
-
-                    if (fi1.Length == fi2.Length && fi1.LastWriteTime == fi2.LastWriteTime)
-                    {
-                        bOK = false;
-                        sMsg = "This is the same file as the currently open file.  Nothing to do.";
-                    }
-                    else
-                    {
-                        sMsg = $"This will revert {LatestHistoryFile.Name} to the version from\n\n" +
-                            $"{row.PrettyWhenSaved}\n\nDo you want to revert to this version?";
-                    }
-                }
-
-                if(bOK)
-                {
-                    MessageBoxResult result = MessageBox.Show(sMsg, "Revert from Version",
-                        MessageBoxButton.OKCancel, MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.OK)
-                    {
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(sMsg, "Cannot Revert", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-            }
+            //
+            // Not sure we should have gotten here?
+            //
+            Debug.Assert(rdi.IsDocumentInitialized);
+            return;
         }
+
+        if (rdi.IsDirty)
+        {
+            MessageBox.Show("The currently open file must be saved first.",
+                "Cannot Revert", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            return;
+        }
+
+        //
+        // Get the version file and the "live" file.
+        //
+        FileInfo fiVersionFile = row.VSHistoryFileInfo;
+        FileInfo fiSourceFile = LatestHistoryFile.VSFileInfo;
+        Debug.Assert(fiVersionFile.Exists && fiSourceFile.Exists);
+
+        if (fiVersionFile.Length == fiSourceFile.Length &&
+            fiVersionFile.LastWriteTime == fiSourceFile.LastWriteTime)
+        {
+            MessageBox.Show("This is the same file as the currently open file.  Nothing to do.",
+                "Cannot Revert", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            return;
+        }
+
+        string sMsg = $"This will revert {LatestHistoryFile.Name} to the version from\n\n" +
+                $"{row.PrettyWhenSaved} ({row.FileSize:N0} bytes)\n\n" +
+                "Do you want to revert to this version?";
+
+        MessageBoxResult result = MessageBox.Show(sMsg, "Revert from Version",
+            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+        if (result != MessageBoxResult.OK)
+        {
+            return;
+        }
+
+        //
+        // We "revert" to the version file by writing it over the live file.
+        //
+        try
+        {
+            //fiVersionFile.CopyTo(fiSourceFile.FullName, true);
+
+            //
+            // Highlight the row we just converted from and
+            // clean the highlight on the others.
+            //
+            foreach (VSHistoryRow item in VSHistoryRows)
+            {
+                item.BoldText = false;
+            }
+            row.BoldText = true;
+
+            gridFiles.ItemsSource = null;
+            gridFiles.ItemsSource = g_VSControl?.VSHistoryRows;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to revert from the version file: {ex}",
+                "Revert Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+
     }
 }
