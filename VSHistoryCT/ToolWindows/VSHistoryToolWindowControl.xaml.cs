@@ -81,6 +81,8 @@ public partial class VSHistoryToolWindowControl : UserControl
     /// <param name="e"></param>
     private void DataGridCell_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
+        ThreadHelper.ThrowIfNotOnUIThread();
+
         //
         // Testing shows that the device is a Mouse regardless of
         // the actual input device, like mouse, touch pad, touch screen, etc.
@@ -178,6 +180,8 @@ public partial class VSHistoryToolWindowControl : UserControl
     /// <param name="row"></param>
     private void RevertVersion(VSHistoryRow row)
     {
+        ThreadHelper.ThrowIfNotOnUIThread();
+
         //
         // For project files, the Moniker is the path to the file.
         // Visual Studio really doesn't like long file paths like
@@ -214,11 +218,11 @@ public partial class VSHistoryToolWindowControl : UserControl
         // Get the version file and the "live" file.
         //
         FileInfo fiVersionFile = row.VSHistoryFileInfo;
-        FileInfo fiSourceFile = LatestHistoryFile.VSFileInfo;
-        Debug.Assert(fiVersionFile.Exists && fiSourceFile.Exists);
+        FileInfo fiLiveFile = LatestHistoryFile.VSFileInfo;
+        Debug.Assert(fiVersionFile.Exists && fiLiveFile.Exists);
 
-        if (fiVersionFile.Length == fiSourceFile.Length &&
-            fiVersionFile.LastWriteTime == fiSourceFile.LastWriteTime)
+        if (fiVersionFile.Length == fiLiveFile.Length &&
+            fiVersionFile.LastWriteTime == fiLiveFile.LastWriteTime)
         {
             MessageBox.Show("This is the same file as the currently open file.  Nothing to do.",
                 "Cannot Revert", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -242,20 +246,39 @@ public partial class VSHistoryToolWindowControl : UserControl
         //
         try
         {
-            //fiVersionFile.CopyTo(fiSourceFile.FullName, true);
+            using (FileStream fsLive = File.Create(fiLiveFile.FullName))
+            {
+                using (FileStream fsVersion = fiVersionFile.OpenRead())
+                {
+                    fsVersion.CopyTo(fsLive);
+                }
+            }
+            
+            //
+            // Refresh the FileInfo and save the current file as a version.
+            //
+            fiLiveFile.Refresh();
+            LatestHistoryFile.Save();
 
             //
-            // Highlight the row we just converted from and
-            // clean the highlight on the others.
+            // Refresh the versions shown in the Tool Window.
+            //
+            RefreshVSHistoryWindow(filePath: fiLiveFile.FullName, bForce: true);
+
+            //
+            // Highlight the row we just converted from.
             //
             foreach (VSHistoryRow item in VSHistoryRows)
             {
-                item.BoldText = false;
+                if (item.VSHistoryFileInfo.FullName == fiVersionFile.FullName)
+                {
+                    item.BoldText = true;
+                    break;
+                }
             }
-            row.BoldText = true;
 
             gridFiles.ItemsSource = null;
-            gridFiles.ItemsSource = g_VSControl?.VSHistoryRows;
+            gridFiles.ItemsSource = VSHistoryRows;
         }
         catch (Exception ex)
         {
