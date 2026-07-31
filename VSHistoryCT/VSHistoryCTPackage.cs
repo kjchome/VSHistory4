@@ -82,26 +82,9 @@ public sealed class VSHistoryPackage : ToolkitPackage
     protected override async Task InitializeAsync(
         CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
-        VSLogMsg(VSVersion());
-
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
         await base.InitializeAsync(cancellationToken, progress);
-
-        //
-        // Open the Output window lazily -- it won't actually open until written to.
-        //
-        g_DebugPane = await OutputWindowPane.CreateAsync("VSHistory Log");
-
-        //
-        // Register commands, i.e., things with the [Command] attribute.
-        //
-        await this.RegisterCommandsAsync();
-
-        //
-        // Register our tool window.
-        //
-        this.RegisterToolWindows();
 
         //
         // Set our event handlers.
@@ -115,9 +98,41 @@ public sealed class VSHistoryPackage : ToolkitPackage
         solutionEvents.OnAfterOpenFolder += SolutionEvents_OnAfterOpenFolder;
 
         //
+        // Open the Output window lazily -- it won't actually open until written to.
+        //
+        g_DebugPane = await OutputWindowPane.CreateAsync("VSHistory Log");
+
+        VSLogMsg(VSVersion());
+
+        //
+        // Register commands, i.e., things with the [Command] attribute.
+        //
+        await this.RegisterCommandsAsync();
+
+        //
+        // Register our tool window.
+        //
+        this.RegisterToolWindows();
+
+        //
         // Watch for changes to the Settings file.
         //
         _ = new SettingsWatcher();
+
+        //
+        // There is a potential race condition at startup (especially with VS2026)
+        // where the solution was loaded before the OnAfterOpenSolution event
+        // was registered.  If we don't have a solution, check to see if there is one.
+        //
+        if (string.IsNullOrEmpty(SolutionName))
+        {
+            VSLogMsg("Retry getting solution...", Severity.Detail);
+            await InitSolutionInfoAsync();
+        }
+        else
+        {
+            VSLogMsg($"Have solution '{SolutionName}'", Severity.Detail);
+        }
     }
 
     /// <summary>

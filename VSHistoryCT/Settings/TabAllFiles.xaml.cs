@@ -347,6 +347,7 @@ public partial class TabAllFiles : UserControl
     {
         if (string.IsNullOrEmpty(SolutionPath) || AllSolutionFiles.Count == 0)
         {
+            VSLogMsg($"SolutionPath '{SolutionPath}' AllSolutionFiles.Count {AllSolutionFiles.Count}");
             return;
         }
 

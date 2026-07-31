@@ -182,7 +182,7 @@ public class SolutionInfo
     /// <returns></returns>
     public static async Task InitSolutionInfoAsync()
     {
-        VSLogMsg("Initializing Solution (waiting for main thread)", Severity.Detail);
+        VSLogMsg("Initializing Solution Async (waiting for main thread)", Severity.Detail);
 
         ResetSolutionInfo();
 
