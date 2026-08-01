@@ -602,9 +602,7 @@ public static class VSHistoryUtilities
             //
             // Combine the directory with the filename.
             //
-            string sCurrentFilePath = Path.Combine(dirReal.FullName, sBaseFilename);
-
-            return new FileInfo(sCurrentFilePath);
+            return new FileInfo(Path.Combine(dirReal.FullName, sBaseFilename));
         }
         catch (Exception ex)
         {

@@ -293,6 +293,8 @@ public partial class VSHistoryToolWindowControl : UserControl
             //
             gridFiles.ItemsSource = null;
             gridFiles.ItemsSource = VSHistoryRows;
+
+            VSLogMsg($"Reverted {fiLiveFile.Name} to version {fiVersionFile.Name}");
         }
         catch (Exception ex)
         {

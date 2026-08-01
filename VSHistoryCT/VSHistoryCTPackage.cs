@@ -49,8 +49,7 @@ namespace VSHistory;
 // This causes our extension to be loaded if a solution
 // exists, even if no documents are in the main window.
 //
-[ProvideAutoLoad(UIContextGuids80.SolutionExists,
-    PackageAutoLoadFlags.BackgroundLoad)]
+[ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
 
 [Guid(PackageGuids.VSHistoryString)]
 public sealed class VSHistoryPackage : ToolkitPackage
@@ -62,12 +61,11 @@ public sealed class VSHistoryPackage : ToolkitPackage
     public static OutputWindowPane? g_DebugPane { get; set; }
 
     /// <summary>
-    /// Get the solution info at startup, if any.
-    /// This is used to determine if the solution exists
-    /// at startup and we need to keep it even if is
-    /// never referenced.
+    /// Getting the solution info at startup before the package
+    /// is fully initialized is problematic, especially if logging
+    /// is set to the Output window in Settings.
     /// </summary>
-    public static SolutionInfo g_SolutionInfo { get; set; } = new();
+    public static SolutionInfo? g_SolutionInfo { get; set; }
 
     public static VSHistoryToolWindowControl? g_VSControl { get; set; }
 
@@ -115,24 +113,22 @@ public sealed class VSHistoryPackage : ToolkitPackage
         this.RegisterToolWindows();
 
         //
-        // Watch for changes to the Settings file.
-        //
-        _ = new SettingsWatcher();
-
-        //
-        // There is a potential race condition at startup (especially with VS2026)
-        // where the solution was loaded before the OnAfterOpenSolution event
-        // was registered.  If we don't have a solution, check to see if there is one.
+        // We should be fully initialized so it's safe to look for a solution.
         //
         if (string.IsNullOrEmpty(SolutionName))
         {
-            VSLogMsg("Retry getting solution...", Severity.Detail);
+            VSLogMsg("Initializing the Solution...", Severity.Detail);
             await InitSolutionInfoAsync();
         }
         else
         {
-            VSLogMsg($"Have solution '{SolutionName}'", Severity.Detail);
+            VSLogMsg($"Have solution '{SolutionName}' ??", Severity.Warning);
         }
+
+        //
+        // Watch for changes to the Settings file.
+        //
+        _ = new SettingsWatcher();
     }
 
     /// <summary>

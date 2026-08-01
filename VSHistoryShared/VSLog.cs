@@ -10,7 +10,6 @@ namespace VSHistoryShared;
 
 public static class VSLog
 {
-    private static string _AssemblyBuildTime = "";
     private static StreamWriter? _LogWriter;
 
     /// <summary>
@@ -30,7 +29,7 @@ public static class VSLog
     {
         get
         {
-            if (string.IsNullOrEmpty(_AssemblyBuildTime))
+            if (string.IsNullOrEmpty(field))
             {
                 //
                 // BuildTimestamp.cs is built automatically
@@ -45,20 +44,20 @@ public static class VSLog
                 //
                 if (DateTime.TryParse(BuildTimestamp.CompileTime, out DateTime buildTime))
                 {
-                    _AssemblyBuildTime = buildTime.ToString("G");
+                    field = buildTime.ToString("G");
                 }
                 else
                 {
                     //
                     // Hmmm.  This shouldn't have failed...
                     //
-                    _AssemblyBuildTime = "(Unknown)";
+                    field = "(Unknown)";
                 }
             }
 
-            return _AssemblyBuildTime;
+            return field;
         }
-    }
+    } = "";
 
     /// <summary>
     /// The executing assembly name.
@@ -183,7 +182,9 @@ public static class VSLog
     {
         VS_Settings settings = VsSettings;
 
-        if (!settings.LoggingEnabled || (uint)severity < settings.LogLevelIndex)
+        if (!settings.LoggingEnabled
+            || (uint)severity < settings.LogLevelIndex
+            || (!settings.LogToFile && !settings.LogToOutputWindow))
         {
             return;
         }

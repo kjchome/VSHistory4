@@ -114,13 +114,13 @@ You can also choose whether the search should be case-sensitive or not by using 
 
 [Help for Filters](Help_Filters.png)
 
-### Revert VS History Versions
+### Revert Your File to a VS History Version
 
-The currently active file can be reverted to a given VS History version file by right-clicking on that version. If you confirm that you want to revert to that version, these actions will occur:
+You can revert the currently active file to a given VS History version file by right-clicking on that version. If you confirm that you want to revert to that version, these actions will occur:
 
 * Your current file will be saved as a VS History file.
 * The selected version will be written to your current file.
-* The version that you selected will be **displayed in bold** in the VSHistory tool window.
+* The **version that you selected will be displayed in bold** in the VSHistory tool window.
 
 ### Changes in VSHistory 4.0
 

@@ -149,10 +149,9 @@ public partial class TabAllFiles : UserControl
             TreeViewItem child = new()
             {
                 ToolTip = fileInfo.FullName,
-                Tag = fileInfo
+                Tag = fileInfo,
+                Header = GetHeaderBlock(fileInfo, sTitle)
             };
-
-            child.Header = GetHeaderBlock(fileInfo, sTitle);
 
             treeViewItem?.Items.Add(child);
         }
@@ -166,14 +165,16 @@ public partial class TabAllFiles : UserControl
     private void DisplayTreeByFilename()
     {
         List<TreeViewItem> treeViewItems = new();
-
+        foreach (var (vsHistoryFile, thisFile) in
         //
         // Load up the TreeView elements.
         //
-        foreach (VSHistoryFile vsHistoryFile in
-            AllSolutionFiles.Where(f => f.HasHistoryFiles).OrderBy(n => n.VSFileInfo.Name))
+        from VSHistoryFile vsHistoryFile in AllSolutionFiles
+            .Where(static f => f.HasHistoryFiles)
+            .OrderBy(n => n.VSFileInfo.Name)
+                let thisFile = vsHistoryFile.VSFileInfo
+                select (vsHistoryFile, thisFile))
         {
-            FileInfo thisFile = vsHistoryFile.VSFileInfo;
             string sTitle;
             if (thisFile.Exists)
             {
@@ -189,10 +190,9 @@ public partial class TabAllFiles : UserControl
             TreeViewItem treeViewItem = new()
             {
                 ToolTip = thisFile.FullName,
-                Tag = thisFile
+                Tag = thisFile,
+                Header = GetHeaderBlock(thisFile, sTitle)
             };
-
-            treeViewItem.Header = GetHeaderBlock(thisFile, sTitle);
 
             treeViewItems.Add(treeViewItem);
 
@@ -226,22 +226,6 @@ public partial class TabAllFiles : UserControl
     /// <returns></returns>
     private TextBlock GetHeaderBlock(FileInfo thisFile, string sTitle)
     {
-        //
-        // The TextBlock to use for C# files.  This is used in place
-        // of the icon for C# files because it's closer to the
-        // icon used in the VS IDE.  The color is taken from
-        //
-        // https://learn.microsoft.com/en-us/visualstudio/extensibility/ux-guidelines/images-and-icons-for-visual-studio?view=vs-2022#visual-studio-languages
-        //
-        TextBlock CSharpTextBlock = new()
-        {
-            Text = "C#",
-            Foreground = new SolidColorBrush(
-                new Color() { A = 255, R = 56, G = 138, B = 52 }),
-            Height = SystemParameters.SmallIconHeight,
-            Width = SystemParameters.SmallIconWidth,
-        };
-
         TextBlock textBlock = new()
         {
             VerticalAlignment = VerticalAlignment.Center,
@@ -250,13 +234,29 @@ public partial class TabAllFiles : UserControl
         switch (thisFile.Extension.ToLower())
         {
             case ".cs":
+                //
+                // The TextBlock to use for C# files.  This is used in place
+                // of the icon for C# files because it's closer to the
+                // icon used in the VS IDE.  The color is taken from
+                //
+                // https://learn.microsoft.com/en-us/visualstudio/extensibility/ux-guidelines/images-and-icons-for-visual-studio?view=vs-2022#visual-studio-languages
+                //
+                TextBlock CSharpTextBlock = new()
+                {
+                    Text = "C#",
+                    Foreground = new SolidColorBrush(new Color() { A = 255, R = 56, G = 138, B = 52 }),
+                    Height = SystemParameters.SmallIconHeight,
+                    Width = SystemParameters.SmallIconWidth,
+                };
+
                 textBlock.Inlines.Add(CSharpTextBlock);
                 break;
 
             default:
-                Image image = new();
-                image.Source = m_BitmapSources.GetBitmapSource(thisFile.FullName);
-                textBlock.Inlines.Add(image);
+                textBlock.Inlines.Add(new Image()
+                {
+                    Source = m_BitmapSources.GetBitmapSource(thisFile.FullName)
+                });
                 break;
         }
 
@@ -278,8 +278,7 @@ public partial class TabAllFiles : UserControl
         //
         e.Handled = true;
 
-        TreeViewItem? selected = treeViewFiles.SelectedItem as TreeViewItem;
-        if (selected == null)
+        if (treeViewFiles.SelectedItem is not TreeViewItem selected || selected == null)
         {
             Debug.Assert(false, "Selected item is null");
             return;
@@ -299,8 +298,7 @@ public partial class TabAllFiles : UserControl
         // The parent is the project file.
         // Show the difference.
         //
-        TreeViewItem? parent = selected.Parent as TreeViewItem;
-        if (parent == null)
+        if (selected.Parent is not TreeViewItem parent || parent == null)
         {
             Debug.Assert(false, "Parent item is null");
             return;
@@ -311,7 +309,6 @@ public partial class TabAllFiles : UserControl
 
         if (radOrderByFile.IsChecked == true &&
             selected.Tag is FileInfo &&
-            parent != null &&
             parent.Tag is FileInfo)
         {
             fileInfo = (FileInfo)selected.Tag;
@@ -345,9 +342,12 @@ public partial class TabAllFiles : UserControl
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
+        ThreadHelper.ThrowIfNotOnUIThread();
+
         if (string.IsNullOrEmpty(SolutionPath) || AllSolutionFiles.Count == 0)
         {
-            VSLogMsg($"SolutionPath '{SolutionPath}' AllSolutionFiles.Count {AllSolutionFiles.Count}");
+            VSLogMsg($"SolutionPath '{SolutionPath}' AllSolutionFiles.Count {AllSolutionFiles.Count}",
+                Severity.Warning);
             return;
         }
 
@@ -377,7 +377,7 @@ public partial class TabAllFiles : UserControl
     /// <param name="e"></param>
     private void btnDeleteAll_Click(object sender, RoutedEventArgs e)
     {
-        int iNumFiles = AllSolutionFiles.Select(f => f.VSHistoryFiles.Count).Sum();
+        int iNumFiles = AllSolutionFiles.Sum(f => f.VSHistoryFiles.Count);
 
         MessageBoxResult result = MessageBox.Show(
             $"This will delete {iNumFiles:N0} VSHistory files in this solution.\n\n" +
@@ -396,14 +396,12 @@ public partial class TabAllFiles : UserControl
         //
         // Get all the directories that contain the VSHistory files.
         //
-        List<DirectoryInfo> directoriesToDelete =
-            AllSolutionFiles.Select(f => f.VSHistoryDir).ToList();
+        List<DirectoryInfo> directoriesToDelete = [.. AllSolutionFiles.Select(f => f.VSHistoryDir)];
 
         //
         // Each directory should be a subdirectory of the .vshistory directory.
         //
-        List<string> vshistoryDirs =
-            directoriesToDelete.Select(d => d.Parent.FullName).Distinct().ToList();
+        List<string> vshistoryDirs = [.. directoriesToDelete.Select(d => d.Parent.FullName).Distinct()];
 
         foreach (string sDir in vshistoryDirs)
         {
