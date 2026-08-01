@@ -263,7 +263,13 @@ public static class VSLog
     /// <returns></returns>
     public static string VSVersion()
     {
-        string sVSVersion = "?";
+        string sVSVersion = $"{AssemblyName} v{VSHistoryAssembly.GetName().Version!.ToString(3)} " +
+#if DEBUG
+            "Debug" +
+#else
+            "Release" +
+#endif
+            $" Built {AssemblyBuildTime}";
 
         //
         // Output our name, version and how long after Visual Studio started.
@@ -280,11 +286,7 @@ public static class VSLog
                 TimeSpan ts = DateTime.Now - xProcess.StartTime;
                 string sVSStart = xProcess.StartTime.ToString("HH:mm:ss.fff");
 
-                sVSVersion = $"{AssemblyName} v{VSHistoryAssembly.GetName().Version!.ToString(3)} Built {AssemblyBuildTime}, {ts.TotalSeconds:F3} seconds after VS (started {sVSStart}) ";
-            }
-            else
-            {
-                sVSVersion = $"{AssemblyName} v{VSHistoryAssembly.GetName().Version!.ToString(3)} Built {AssemblyBuildTime}";
+                sVSVersion += $", {ts.TotalSeconds:F3} seconds after VS (started {sVSStart}) ";
             }
         }
 

@@ -254,4 +254,7 @@
   <Target Name="BeforeBuild">
     <WriteLinesToFile File="..\VSHistoryShared\BuildTimestamp.cs" Lines="// Created automatically by the BeforeBuild Target in the project file.&#xD;&#xA;internal class BuildTimestamp&#xD;&#xA;{&#xD;&#xA;    public const string CompileTime = &quot;$([System.DateTime]::UtcNow.ToString('u'))&quot;%3B &#xD;&#xA;}" Overwrite="true" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>COPY /Y $(TargetDir)$(TargetName).vsix %25OneDrive%25\DataFiles\$(TargetName)_$(ConfigurationName).vsix</PostBuildEvent>
+  </PropertyGroup>
 </Project>

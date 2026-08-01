@@ -327,9 +327,7 @@ public class VS_Settings : ICloneable
                     //
                     if (!string.IsNullOrWhiteSpace(SolutionName))
                     {
-                        settings = AllVsSettings
-                            .Where(s => s.Name == SolutionName!)
-                            .FirstOrDefault();
+                        settings = AllVsSettings.FirstOrDefault(static s => s.Name == SolutionName!);
 
                         //
                         // If the settings are not found, create one using the default settings.
