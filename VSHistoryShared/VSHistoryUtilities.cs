@@ -230,6 +230,33 @@ public static class VSHistoryUtilities
     }
 
     /// <summary>
+    /// Remove the "\\?\" prefix from a path if the path is like "\\?\X:\", or
+    /// change a network path from "\\?\UNC\server\share\dir" to "\\server\share\dir".
+    /// </summary>
+    /// <param name="sPath">
+    /// </param>
+    /// <returns>
+    /// </returns>
+    public static string ShortPath(string sPath)
+    {
+        if (sPath.StartsWith(@"\\?\") && char.IsLetter(sPath[4]) && sPath[5] == ':')
+        {
+            //
+            // Change "\\?\C:\dir\file" to "C:\dir\file".
+            //
+            return sPath.Substring(4);
+        }
+        else if(sPath.StartsWith(@"\\?\UNC\"))
+        {
+            //
+            // Change "\\?\UNC\server\share\dir" to "\\server\share\dir".
+            //
+            return @"\" + sPath.Substring(7);
+        }
+        return sPath;
+    }
+
+    /// <summary>
     /// Build a path using the "\\?\" prefix
     /// to support long (>260 character) paths.
     /// </summary>
@@ -575,9 +602,7 @@ public static class VSHistoryUtilities
             //
             // Combine the directory with the filename.
             //
-            string sCurrentFilePath = Path.Combine(dirReal.FullName, sBaseFilename);
-
-            return new FileInfo(sCurrentFilePath);
+            return new FileInfo(Path.Combine(dirReal.FullName, sBaseFilename));
         }
         catch (Exception ex)
         {

@@ -49,8 +49,7 @@ namespace VSHistory;
 // This causes our extension to be loaded if a solution
 // exists, even if no documents are in the main window.
 //
-[ProvideAutoLoad(UIContextGuids80.SolutionExists,
-    PackageAutoLoadFlags.BackgroundLoad)]
+[ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
 
 [Guid(PackageGuids.VSHistoryString)]
 public sealed class VSHistoryPackage : ToolkitPackage
@@ -62,12 +61,11 @@ public sealed class VSHistoryPackage : ToolkitPackage
     public static OutputWindowPane? g_DebugPane { get; set; }
 
     /// <summary>
-    /// Get the solution info at startup, if any.
-    /// This is used to determine if the solution exists
-    /// at startup and we need to keep it even if is
-    /// never referenced.
+    /// Getting the solution info at startup before the package
+    /// is fully initialized is problematic, especially if logging
+    /// is set to the Output window in Settings.
     /// </summary>
-    public static SolutionInfo g_SolutionInfo { get; set; } = new();
+    public static SolutionInfo? g_SolutionInfo { get; set; }
 
     public static VSHistoryToolWindowControl? g_VSControl { get; set; }
 
@@ -82,16 +80,27 @@ public sealed class VSHistoryPackage : ToolkitPackage
     protected override async Task InitializeAsync(
         CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
-        VSLogMsg(VSVersion());
-
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
         await base.InitializeAsync(cancellationToken, progress);
 
         //
+        // Set our event handlers.
+        //
+        _ = new VSHistoryDocumentEvents();
+
+        SolutionEvents solutionEvents = VS.Events.SolutionEvents;
+
+        solutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+        solutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+        solutionEvents.OnAfterOpenFolder += SolutionEvents_OnAfterOpenFolder;
+
+        //
         // Open the Output window lazily -- it won't actually open until written to.
         //
         g_DebugPane = await OutputWindowPane.CreateAsync("VSHistory Log");
+
+        VSLogMsg(VSVersion());
 
         //
         // Register commands, i.e., things with the [Command] attribute.
@@ -104,15 +113,17 @@ public sealed class VSHistoryPackage : ToolkitPackage
         this.RegisterToolWindows();
 
         //
-        // Set our event handlers.
+        // We should be fully initialized so it's safe to look for a solution.
         //
-        _ = new VSHistoryDocumentEvents();
-
-        SolutionEvents solutionEvents = VS.Events.SolutionEvents;
-
-        solutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
-        solutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
-        solutionEvents.OnAfterOpenFolder += SolutionEvents_OnAfterOpenFolder;
+        if (string.IsNullOrEmpty(SolutionName))
+        {
+            VSLogMsg("Initializing the Solution...", Severity.Detail);
+            await InitSolutionInfoAsync();
+        }
+        else
+        {
+            VSLogMsg($"Have solution '{SolutionName}' ??", Severity.Warning);
+        }
 
         //
         // Watch for changes to the Settings file.

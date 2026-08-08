@@ -44,13 +44,14 @@
     <NoWarn>CS0436;CS8632;CVSTK001;CVSTK002;MSB3277</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;VSHISTORY_PACKAGE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>CS0436;CS8632;CVSTK001;CVSTK002;MSB3277</NoWarn>
+    <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\AllFilesCommand.cs" />
@@ -227,7 +228,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MessagePack">
-      <Version>3.1.4</Version>
+      <Version>3.1.8</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.14.2120">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -254,4 +255,7 @@
   <Target Name="BeforeBuild">
     <WriteLinesToFile File="..\VSHistoryShared\BuildTimestamp.cs" Lines="// Created automatically by the BeforeBuild Target in the project file.&#xD;&#xA;internal class BuildTimestamp&#xD;&#xA;{&#xD;&#xA;    public const string CompileTime = &quot;$([System.DateTime]::UtcNow.ToString('u'))&quot;%3B &#xD;&#xA;}" Overwrite="true" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>COPY /Y $(TargetDir)$(TargetName).vsix %25OneDrive%25\DataFiles\$(TargetName)_$(ConfigurationName).vsix</PostBuildEvent>
+  </PropertyGroup>
 </Project>

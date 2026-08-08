@@ -43,6 +43,7 @@ public class VSHistorySolutionEvents
             VSLogMsg("No solution open?", Severity.Warning);
             return;
         }
+        ThreadHelper.ThrowIfNotOnUIThread();
 
         VSLogMsg("Solution OPENED! " + obj.FullPath, Severity.Detail);
 

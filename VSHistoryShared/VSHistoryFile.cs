@@ -1,13 +1,10 @@
-﻿
-namespace VSHistoryShared;
+﻿namespace VSHistoryShared;
 
 /// <summary>
 /// Class to manage VS History files
 /// </summary>
 public class VSHistoryFile
 {
-    private PhysicalFile? _PhysicalFile = null;
-    private string? _ProjectName = null;
 
     /// <summary>
     /// The compressed, hidden directory into which all VS History files are saved.
@@ -67,8 +64,6 @@ public class VSHistoryFile
     /// </summary>
     public string FullPath => VSFileInfo.FullName;
 
-    private DirectoryInfo? _VSHistoryDir;
-
     /// <summary>
     /// Directory of the VS History files.
     /// </summary>
@@ -76,7 +71,7 @@ public class VSHistoryFile
     {
         get
         {
-            if (_VSHistoryDir == null)
+            if (field == null)
             {
                 //
                 // Directory of the history files, if any.
@@ -115,22 +110,22 @@ public class VSHistoryFile
                     //
                     //  fullPath = C:\Users\SomeUser\AppData\Local\.vshistory\C\Users\SomeUser\Documents\Projects\TheProject\file.cs
                     //
-                    char[] asTrim = { '\\', '?' };
-
                     fullPath = Path.Combine(
                         baseDirectory,
                         VSHistoryDirName,
-                        FullPath.TrimStart(asTrim).Replace(":", ""));
+                        ShortPath(FullPath).Replace(":", ""));
                 }
 
                 //
                 // Convert the path to a long path ("\\?\C:\...") and save it.
                 //
-                _VSHistoryDir = new DirectoryInfo(LongPath(fullPath));
+                field = new DirectoryInfo(LongPath(fullPath));
             }
 
-            return _VSHistoryDir;
+            return field;
         }
+
+        private set;
     }
 
     /// <summary>
@@ -157,7 +152,12 @@ public class VSHistoryFile
                     //
                     // Get all the files and save them in reverse order (most recent first).
                     //
+                    // Note that we cannot assume that GetFiles() will return the files
+                    // in alphabetical order (although I've never seen it where it doesn't
+                    // on NTFS). Therefore, sort the list first and then reverse it.
+                    //
                     _VSHistoryFiles = [.. VSHistoryDir.GetFiles(VSHistoryFilenameMask)];
+                    _VSHistoryFiles.Sort(new VSHistoryFileDateCompare());
                     _VSHistoryFiles.Reverse();
 
                     //
@@ -361,13 +361,19 @@ public class VSHistoryFile
     /// <summary>
     /// The PhysicalFile associated with this solution file.
     /// </summary>
-    public PhysicalFile? ThePhysicalFile => _PhysicalFile ??=
-        ThreadHelper.JoinableTaskFactory.Run(() => PhysicalFile.FromFileAsync(FullPath));
+    public PhysicalFile? ThePhysicalFile
+    {
+        get => field ??=
+            ThreadHelper.JoinableTaskFactory.Run(() => PhysicalFile.FromFileAsync(FullPath));
+    } = null;
 
     /// <summary>
     /// The Project name associated with this solution file.
     /// </summary>
-    public string? ProjectName => _ProjectName ??= ThePhysicalFile?.ContainingProject?.Name;
+    public string? ProjectName
+    {
+        get => field ??= ThePhysicalFile?.ContainingProject?.Name;
+    } = null;
 
     /// <summary>
     /// This VSHistory file has been renamed.
@@ -492,7 +498,7 @@ public class VSHistoryFile
     private void SaveAndPurge(FileInfo fileHistoryFile)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
-        
+
         VSLogMsg("Save " + fileHistoryFile.FullName);
 
         //
@@ -504,6 +510,7 @@ public class VSHistoryFile
         // Get all the files and save them in reverse order (most recent first).
         //
         _VSHistoryFiles = [.. VSHistoryDir.GetFiles(VSHistoryFilenameMask)];
+        _VSHistoryFiles.Sort(new VSHistoryFileDateCompare());
         _VSHistoryFiles.Reverse();
 
         //
@@ -558,7 +565,7 @@ public class VSHistoryFile
         }
 
         ThreadHelper.ThrowIfNotOnUIThread();
-        
+
         try
         {
             CreatePath();

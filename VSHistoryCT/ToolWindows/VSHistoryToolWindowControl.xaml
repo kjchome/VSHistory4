@@ -8,7 +8,7 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300"
+             d:DesignWidth="400"
              Name="VSHistoryToolWindow">
 
     <UserControl.Resources>
@@ -69,6 +69,7 @@
             RowHeaderWidth="0"
             HorizontalGridLinesBrush="{DynamicResource cellBackground}"
             VerticalGridLinesBrush="{DynamicResource cellBackground}"
+            PreviewMouseRightButtonDown="DataGridCell_PreviewMouseRightButtonDown"
             >
 
             <DataGrid.Columns>
@@ -82,6 +83,7 @@
                         <DataTemplate>
                             <Button
                                 Content="{Binding ElementName=colOpen, Path=Header}"
+                                ToolTip="Click to view this version."
                                 Click="Open_Click"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -121,6 +123,7 @@
                         <DataTemplate>
                             <Button
                                 Content="{Binding ElementName=colDiff, Path=Header}"
+                                ToolTip="Click to view the difference between this version and the current file."
                                 Click="Diff_Click"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -139,9 +142,14 @@
                             <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
                             <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
                             <Setter Property="ToolTip" Value="{Binding SizeOnDisk}"/>
-                            <!-- This causes ugly white spaces when the Dark theme is used.
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
-                            -->
+
+                            <!-- Set bold if BoldText is set in the VSHistoryRow. -->
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BoldText}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -151,7 +159,7 @@
                     Header="Date (localized)"
                     IsReadOnly="True"
                     Width="*"
-                    SortMemberPath="{Binding WhenSaved}"
+                    SortMemberPath="WhenSaved"
                     Binding="{Binding PrettyWhenSaved}"
                     >
                     <DataGridTextColumn.CellStyle>
@@ -159,6 +167,15 @@
                             <Setter Property="BorderThickness" Value="0"/>
                             <Setter Property="Background" Value="{DynamicResource cellBackground}"/>
                             <Setter Property="Foreground" Value="{DynamicResource cellForeground}"/>
+                            <Setter Property="ToolTip" Value="Right-click to revert to this version"/>
+
+                            <!-- Set bold if BoldText is set in the VSHistoryRow. -->
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding BoldText}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>

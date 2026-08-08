@@ -9,6 +9,7 @@ A custom VSHistory tool window displays each version of project files as they're
 * View the difference between that version and your current file.
 * View the difference between that version and another version.
 * Open that version in Visual Studio.
+* Revert your current file to that version.
 
 **VSHistory version 4 is a complete re-write of VSHistory** using the [Community.VisualStudio.Toolkit.17](https://www.nuget.org/packages/Community.VisualStudio.Toolkit.17/) package. For details, see _Changes in VSHistory 4_ below.
 
@@ -113,6 +114,14 @@ You can also choose whether the search should be case-sensitive or not by using 
 
 [Help for Filters](Help_Filters.png)
 
+### Revert Your File to a VS History Version
+
+You can revert the currently active file to a given VS History version file by right-clicking on that version. If you confirm that you want to revert to that version, these actions will occur:
+
+* Your current file will be saved as a VS History file.
+* The selected version will be written to your current file.
+* The **version that you selected will be displayed in bold** in the VSHistory tool window.
+
 ### Changes in VSHistory 4.0
 
 #### Updated Settings
@@ -173,6 +182,11 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.2.0 Added ability to easily revert from previous versions when you right-click on a version in the tool window
+    * Fixed sorting in the Date field of the tool window
+    * Handle the unusual cases where enumerating directories won't be alphabetical
+    * Updated to build is VS 2026
+    * Numerous small optimizations
 * 4.1.0 Added VS History File Filters
 * 4.0.13 Fixed the dates displayed in the Date Formats window in Settings.
 * 4.0.12 Fixed a regression problem introduced in 4.0.7 where the current file was saved even if VSHistory was disabled.
