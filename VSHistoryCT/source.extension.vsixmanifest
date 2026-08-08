@@ -10,7 +10,7 @@
     <PreviewImage>Resources\icon2.png</PreviewImage>
     <Tags>File History, File Versions</Tags>
   </Metadata>
-  <Installation AllUsers="true">
+  <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.4,)">
       <ProductArchitecture>amd64</ProductArchitecture>
     </InstallationTarget>
