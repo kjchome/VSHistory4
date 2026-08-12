@@ -18,8 +18,12 @@ public class VSHistoryFile
     /// Mask to use when searching for VS History files.
     /// The filename may end with "-" to indicate that it has
     /// been filtered out from display.
+    /// 
+    /// This was "????-??-??_??_??_??_????.*" but that doesn't work
+    /// on some file systems (like pCloud) where it doesn't match
+    /// a filename like "2026-03-05_13_29_06_000.cs".
     /// </summary>
-    public static string VSHistoryFilenameMask => "????-??-??_??_??_??_????.*";
+    public static string VSHistoryFilenameMask => "????-??-??_??_??_??_???*.*";
 
     /// <summary>
     /// Format of the VS history filenames saved.

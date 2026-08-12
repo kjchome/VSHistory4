@@ -182,6 +182,7 @@ The VSHistory source code is now available in [GitHub](https://github.com/kjchom
 
 ## Revision History
 
+* 4.2.1 Fix to accommodate lack of full wildcard filename support in pCloud.
 * 4.2.0 Added ability to easily revert from previous versions when you right-click on a version in the tool window
     * Fixed sorting in the Date field of the tool window
     * Handle the unusual cases where enumerating directories won't be alphabetical
