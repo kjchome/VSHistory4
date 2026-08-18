@@ -1,6 +1,4 @@
-﻿using Microsoft;
-
-namespace VSHistoryShared;
+﻿namespace VSHistoryShared;
 
 public class SolutionInfo
 {
@@ -382,5 +380,13 @@ public class SolutionInfo
         DirsProcessed = new();
         TheIVsSolution = null;
         TheSolution = null;
+
+#if VSHISTORY_PACKAGE
+        //
+        // Reset the tool window.
+        //
+        g_VSToolWindowPane?.Caption = "VSHistory";
+        g_VSControl?.VSHistoryRows.Clear();
+#endif
     }
 }

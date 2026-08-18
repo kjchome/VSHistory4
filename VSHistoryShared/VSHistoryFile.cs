@@ -568,6 +568,28 @@ public class VSHistoryFile
             return;
         }
 
+        uint uiFrequency = VsSettings.Frequency ?
+            FrequencyValues[VsSettings.FrequencyIndex] : 0;
+
+        if (uiFrequency > 0 && HasHistoryFiles)
+        {
+            //
+            // Check to see if it is time to save another version.
+            //
+            DateTime dtLatest = DateTimeFromFilename(VSHistoryFiles![0].Name);
+
+            TimeSpan tsSecondsSinceLatest = VSFileInfo.LastWriteTime - dtLatest;
+
+            if (tsSecondsSinceLatest.TotalSeconds < uiFrequency)
+            {
+                VSLogMsg(
+                    $"Not time to save. Last version {dtLatest:HH:mm:ss}," +
+                    $" next save {dtLatest.AddSeconds(uiFrequency):HH:mm:ss}", Severity.Detail);
+
+                return;
+            }
+        }
+
         ThreadHelper.ThrowIfNotOnUIThread();
 
         try
